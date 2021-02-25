@@ -1,0 +1,19 @@
+{
+  "name": "twitchhighlights",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "concurrently \"cd ./backend && npm run dev \" \"cd ./frontend && npm start\"",
+    "build": "cd ./backend && rimraf build && cd ../frontend && npm run build && copyfiles build/**/* ../backend && rimraf build",
+    "start": "cd ./backend && npm start"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^6.0.0",
+    "copyfiles": "^2.4.1",
+    "rimraf": "^3.0.2"
+  }
+}

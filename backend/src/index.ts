@@ -1,8 +1,8 @@
-import * as express from "express";
+import express from "express";
 
 const app = express();
 const port = process.env.PORT || 8080;
-
+if (process.env.NODE_ENV === "production") app.use(express.static("build"));
 app.get("/", (req, res) => {
   res.send("Hello world!");
 });
