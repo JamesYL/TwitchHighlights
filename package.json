@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "concurrently \"cd ./backend && npm run dev \" \"cd ./frontend && npm start\"",
-    "build": "cd ./backend && rimraf build && cd ../frontend && npm run build && copyfiles build/**/* ../backend && rimraf build",
+    "build": "cd ./backend && rimraf build && npm run build && cd ../frontend && npm run build && copyfiles build/**/* ../backend && rimraf build",
     "start": "cd ./backend && npm start"
   },
   "author": "",
