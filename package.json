@@ -8,7 +8,8 @@
     "dev": "concurrently \"cd ./backend && npm run dev \" \"cd ./frontend && npm start\"",
     "build": "cd ./backend && rimraf build && npm run build && cd ../frontend && npm run build && copyfiles build/**/* ../backend && rimraf build",
     "start": "cd ./backend && npm start",
-    "deploy": "cd ./backend && git add -A && git commit -m \"heroku deployment\" && git push heroku master"
+    "deploy": "cd ./backend && git add -A && git commit -m \"heroku deployment\" && git push heroku master",
+    "make": "npm install && cd ./backend && npm install && cd ../frontend && npm install"
   },
   "author": "",
   "license": "ISC",
