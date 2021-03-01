@@ -2,119 +2,80 @@ import axios from "axios";
 import getVodInfo from "./getVodInfo";
 const config = { headers: { "Client-ID": "kimne78kx3ncx6brgo4mv6wki5h1ko" } };
 
+interface Chat {
+  comments: Comment[];
+  _next?: string;
+  _prev?: string;
+}
+export interface Comment {
+  content_offset_seconds: number;
+  _id: string;
+  message: {
+    body: string;
+  };
+}
+
 // This is used to get the first few comments based on time
 const getFirstComments = async (
   videoId: string | number,
-  startInSeconds: string | number
-) => {
-  const url = `https://api.twitch.tv/v5/videos/${videoId}/comments?content_offset_seconds=${startInSeconds}`;
+  startSeconds = 0
+): Promise<Chat> => {
+  const url = `https://api.twitch.tv/v5/videos/${videoId}/comments?content_offset_seconds=${startSeconds}`;
 
-  const { data } = await axios.get(url, config);
-  console.log(
-    `loaded chat from ${data.comments[0].content_offset_seconds}s to ${
-      data.comments[data.comments.length - 1].content_offset_seconds
-    }s`
-  );
-  return data;
-};
-// This is used to get the next comments based on the link from the previous comment
-const getNext = async (videoId: string | number, cursor: string | number) => {
-  const url = `https://api.twitch.tv/v5/videos/${videoId}/comments?cursor=${cursor}`;
   try {
     const { data } = await axios.get(url, config);
-    console.log(
-      `loaded chat from ${data.comments[0].content_offset_seconds}s to ${
-        data.comments[data.comments.length - 1].content_offset_seconds
-      }s`
-    );
     return data;
   } catch (err) {
-    throw new Error("Bad Id");
+    return { comments: [] };
   }
 };
-const getCommentsJsonHelper = async (
+// This is used to get the next comments based on the link from the previous comment
+const getNext = async (
   videoId: string | number,
-  startInSeconds: number,
-  endInSeconds: number
-) => {
-  const delta = endInSeconds - startInSeconds;
-  if (delta < 1000) {
-    let comments = [];
-    let data;
-    try {
-      data = await getFirstComments(videoId, startInSeconds);
-      comments = comments.concat(data.comments);
-    } catch (err) {
-      throw new Error("ERROR: Failed to get the first few comments");
-    }
-    if (!comments.length || endInSeconds < startInSeconds) {
-      console.log("WARNING: Start time has no comments");
-      return [];
-    }
+  cursor: string | number
+): Promise<Chat> => {
+  const url = `https://api.twitch.tv/v5/videos/${videoId}/comments?cursor=${cursor}`;
+  try {
+    const data: Chat = (await axios.get(url, config)).data;
+    return data;
+  } catch (err) {
+    return { comments: [] };
+  }
+};
+export const getComments = async (
+  videoId: string | number,
+  start = 0,
+  end = 200000
+): Promise<Comment[]> => {
+  const d = end - start;
+  if (start < 0 || end < 0 || end < start) {
+    return [];
+  } else if (d < 1000) {
+    let data = await getFirstComments(videoId, start);
+    if (!data._next && !data._prev) return [];
+    const comments: Comment[] = data.comments.filter(
+      ({ content_offset_seconds }) =>
+        start <= content_offset_seconds && content_offset_seconds < end
+    );
 
-    while (
-      comments[comments.length - 1].content_offset_seconds < endInSeconds &&
-      data._next
-    ) {
-      try {
-        data = await getNext(videoId, data._next);
-      } catch (err) {
-        throw new Error("ERROR: Failed to get the next comments");
-      }
-      comments = comments.concat(data.comments);
+    while (data.comments.length && data._next) {
+      if (data.comments[data.comments.length - 1].content_offset_seconds > end)
+        break;
+      data = await getNext(videoId, data._next);
+      comments.push(
+        ...data.comments.filter(
+          ({ content_offset_seconds }) =>
+            start <= content_offset_seconds && content_offset_seconds < end
+        )
+      );
     }
     return comments;
   } else {
-    const comments1 = getCommentsJsonHelper(
-      videoId,
-      startInSeconds,
-      startInSeconds + delta / 2
-    );
-    const comments2 = getCommentsJsonHelper(
-      videoId,
-      startInSeconds + delta / 2,
-      endInSeconds
-    );
-    return Promise.all([comments1, comments2]).then((comments) => {
-      if (comments[0].length === 0 || comments[1].length === 0)
-        return comments[0].concat(comments[1]);
-      const earliest = comments[1][0].content_offset_seconds;
-      let currIndex = comments[0].length - 1;
-      while (
-        currIndex >= 0 &&
-        comments[0][currIndex].content_offset_seconds >= earliest
-      ) {
-        currIndex--;
-      }
-      return comments[0].slice(0, currIndex + 1).concat(comments[1]);
+    const first = getComments(videoId, start, end - d / 2);
+    const second = getComments(videoId, start + d / 2, end);
+    return Promise.all([first, second]).then((comments) => {
+      comments[0].push(...comments[1]);
+      return comments[0];
     });
   }
-};
-export const getCommentsJson = async (
-  videoId: string | number,
-  startInSeconds = 0,
-  endInSeconds = 1000000000
-) => {
-  const length = (await getVodInfo(videoId)).length;
-  const comments = await getCommentsJsonHelper(
-    videoId,
-    startInSeconds,
-    endInSeconds > length ? length : endInSeconds
-  );
-  console.log("Finished loading comments JSON");
-  return comments;
-};
-
-// Only includes display name, the message, and the time
-export const getSimpleComments = async (
-  videoId: string | number,
-  startInSeconds = 0,
-  endInSeconds = 1000000000
-) => {
-  const comments = await getCommentsJson(videoId, startInSeconds, endInSeconds);
-  return comments.map((item) => ({
-    name: item.commenter.display_name,
-    message: item.message.body.trim(),
-    offset_seconds: item.content_offset_seconds,
-  }));
 };

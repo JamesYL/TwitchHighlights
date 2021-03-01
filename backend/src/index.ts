@@ -1,4 +1,6 @@
+import { getComments } from "./twitch_api/getComments";
 import express from "express";
+import getVodInfo from "./twitch_api/getVodInfo";
 
 const app = express();
 const port = process.env.PORT || 8080;
