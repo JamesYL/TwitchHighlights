@@ -1,5 +1,5 @@
 import axios from "axios";
-import getVodInfo from "./getVodInfo";
+import Observable from "../util/Observable";
 const config = { headers: { "Client-ID": "kimne78kx3ncx6brgo4mv6wki5h1ko" } };
 
 interface Chat {
@@ -44,6 +44,7 @@ const getNext = async (
 };
 export const getComments = async (
   videoId: string | number,
+  observable: Observable = null,
   start = 0,
   end = 200000
 ): Promise<Comment[]> => {
@@ -85,10 +86,11 @@ export const getComments = async (
           })
       );
     }
+    if (observable) observable.updateProgress(d);
     return comments;
   } else {
-    const first = getComments(videoId, start, end - d / 2);
-    const second = getComments(videoId, start + d / 2, end);
+    const first = getComments(videoId, observable, start, end - d / 2);
+    const second = getComments(videoId, observable, start + d / 2, end);
     return Promise.all([first, second]).then((comments) => {
       comments[0].push(...comments[1]);
       return comments[0];
