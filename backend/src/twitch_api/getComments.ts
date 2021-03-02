@@ -53,20 +53,36 @@ export const getComments = async (
   } else if (d < 1000) {
     let data = await getFirstComments(videoId, start);
     if (!data._next && !data._prev) return [];
-    const comments: Comment[] = data.comments.filter(
-      ({ content_offset_seconds }) =>
-        start <= content_offset_seconds && content_offset_seconds < end
-    );
+    const comments: Comment[] = data.comments
+      .filter(
+        ({ content_offset_seconds }) =>
+          start <= content_offset_seconds && content_offset_seconds < end
+      )
+      .map(({ content_offset_seconds, _id, message }) => {
+        return {
+          content_offset_seconds,
+          _id,
+          message: { body: message.body },
+        };
+      });
 
     while (data.comments.length && data._next) {
       if (data.comments[data.comments.length - 1].content_offset_seconds > end)
         break;
       data = await getNext(videoId, data._next);
       comments.push(
-        ...data.comments.filter(
-          ({ content_offset_seconds }) =>
-            start <= content_offset_seconds && content_offset_seconds < end
-        )
+        ...data.comments
+          .filter(
+            ({ content_offset_seconds }) =>
+              start <= content_offset_seconds && content_offset_seconds < end
+          )
+          .map(({ content_offset_seconds, _id, message }) => {
+            return {
+              content_offset_seconds,
+              _id,
+              message: { body: message.body },
+            };
+          })
       );
     }
     return comments;
