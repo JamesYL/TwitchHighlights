@@ -2,9 +2,6 @@ import mongoose from "mongoose";
 import express from "express";
 import dotenv from "dotenv";
 import route from "./controllers/main_route";
-import { getComments } from "./twitch_api/getComments";
-import Observable from "./util/Observable";
-import getVodInfo from "./twitch_api/getVodInfo";
 dotenv.config();
 
 const app = express();
