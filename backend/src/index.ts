@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import express from "express";
 import dotenv from "dotenv";
+import route from "./controllers/main_route";
 dotenv.config();
 
 const app = express();
@@ -12,7 +13,6 @@ const databaseType =
     ? "twitchhighlightsdev"
     : "twtichhighlightstest";
 if (process.env.NODE_ENV === "production") app.use(express.static("build"));
-let database: typeof mongoose;
 mongoose
   .connect(
     `mongodb+srv://${process.env.MONGODB_USER}:${process.env.MONGODB_PASSWORD}@cluster0.8ql8a.mongodb.net/${databaseType}?retryWrites=true&w=majority`,
@@ -23,18 +23,13 @@ mongoose
       useCreateIndex: true,
     }
   )
-  .then((res) => {
-    database = res;
+  .then((db) => {
     console.log("Successfully connected to MongoDB");
+    app.use("/api", route(db));
+    app.listen(port, () => {
+      console.log(`server running on port ${port}`);
+    });
   })
   .catch((err) =>
-    console.error("Failed to connect to MongoDB: " + err.message)
+  console.error("Failed to connect to MongoDB: " + err.message)
   );
-app.get("/", (req, res) => {
-  res.send("Hello world!");
-});
-
-// start the Express server
-app.listen(port, () => {
-  console.log(`server started at http://localhost:${port}`);
-});

@@ -27,5 +27,43 @@ export interface VodInfo {
 
 export default async (id: number | string): Promise<VodInfo> => {
   const url = `https://api.twitch.tv/v5/videos/${id}`;
-  return (await axios.get(url, config)).data as VodInfo;
+  try {
+    const output: VodInfo = {
+      title: "",
+      views: 0,
+      url: "",
+      language: "",
+      created_at: "",
+      published_at: "",
+      recorded_at: "",
+      game: "",
+      length: 0,
+      preview: {
+        small: "",
+        medium: "",
+        large: "",
+      },
+      channel: {
+        display_name: "",
+        logo: "",
+        url: "",
+      },
+    };
+    const data = (await axios.get(url, config)).data as VodInfo;
+    for (const key in output) {
+      if (typeof output[key as keyof VodInfo] === "object") {
+        // @ts-ignore
+        for (const key2 in output[key]) {
+          // @ts-ignore
+          output[key][key2] = data[key][key2];
+        }
+      } else {
+        // @ts-ignore
+        output[key] = data[key];
+      }
+    }
+    return output;
+  } catch (err) {
+    return null;
+  }
 };
