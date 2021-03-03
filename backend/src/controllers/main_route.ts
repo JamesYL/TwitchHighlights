@@ -1,5 +1,4 @@
 import { getComments } from "./../twitch_api/getComments";
-import mongoose from "mongoose";
 import express from "express";
 import getVodInfo from "../twitch_api/getVodInfo";
 import ChatSpeed from "../models/ChatSpeed";
