@@ -16,3 +16,24 @@ export const getChatSpeed = async (
   });
   return output;
 };
+export const getSquashedChatSpeed = async (
+  comments: Comment[],
+  observable: Observable = null,
+  increment = 2
+) => {
+  const allSpeeds = await getChatSpeed(comments, observable, increment);
+  const squashedSpeeds: number[] = [];
+  let i = 0;
+  let curr_skip = 1;
+  for (; i < allSpeeds.length; i++) {
+    if (allSpeeds[i] !== 0) {
+      squashedSpeeds.push(allSpeeds[i]);
+      curr_skip = 1;
+    } else {
+      if (curr_skip === 1) squashedSpeeds.push(0);
+      squashedSpeeds[squashedSpeeds.length - 1] = -curr_skip;
+      curr_skip++;
+    }
+  }
+  return squashedSpeeds;
+};
