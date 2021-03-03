@@ -23,9 +23,9 @@ mongoose
       useCreateIndex: true,
     }
   )
-  .then((db) => {
+  .then(() => {
     console.log("Successfully connected to MongoDB");
-    app.use("/api", route(db));
+    app.use("/api", route());
     app.listen(port, () => {
       console.log(`server running on port ${port}`);
     });
