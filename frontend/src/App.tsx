@@ -1,9 +1,20 @@
 import React from "react";
-import SearchBar from "./components/SearchBar";
+import Home from "./components/Home";
 import "fontsource-roboto";
+import { Switch, Route } from "react-router-dom";
+import AnalyzeVod from "./components/AnalyzeVod";
 
 const App = () => {
-  return <SearchBar />;
+  return (
+    <>
+      <Home />
+      <Switch>
+        <Route path="/search/:vodID">
+          <AnalyzeVod />
+        </Route>
+      </Switch>
+    </>
+  );
 };
 
 export default App;

@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import express from "express";
 import dotenv from "dotenv";
-import route from "./controllers/main_route";
+import route from "./controllers/mainRoute";
 dotenv.config();
 
 const app = express();

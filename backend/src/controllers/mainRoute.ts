@@ -1,5 +1,5 @@
-import { getSquashedChatSpeed } from "./../analysis/analyzeChat";
-import { getComments } from "./../twitch_api/getComments";
+import { getSquashedChatSpeed } from "../analysis/analyzeChat";
+import { getComments } from "../twitch_api/getComments";
 import express from "express";
 import getVodInfo from "../twitch_api/getVodInfo";
 import ChatSpeed from "../models/ChatSpeed";
