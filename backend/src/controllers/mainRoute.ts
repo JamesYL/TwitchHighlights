@@ -24,13 +24,26 @@ const getRouter = () => {
           null,
           INCREMENT
         );
-        new ChatSpeed({
-          vodID: req.params.id,
-          increment: INCREMENT,
-          speeds: allSpeeds,
-        })
-          .save()
-          .then((savedSpeeds) => res.json(savedSpeeds));
+        try {
+          res.json(
+            await new ChatSpeed({
+              vodID: req.params.id,
+              increment: INCREMENT,
+              speeds: allSpeeds,
+            }).save()
+          );
+        } catch (err) {
+          // Duplicate vodIDs due to two requests at the same time
+          if (err.code === 11000) {
+            res.json(
+              await ChatSpeed.findOne({
+                vodID: req.params.id,
+              })
+            );
+          } else {
+            console.error(err.message);
+          }
+        }
       }
     } else {
       res.status(400).json({ message: "Could not get twitch vod info" });

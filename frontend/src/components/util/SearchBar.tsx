@@ -22,6 +22,7 @@ const SearchBar = () => {
       history.push(`/search/${filtered}`);
     } else setIsErr(true);
   };
+  
   return (
     <>
       <TextField
