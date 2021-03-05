@@ -2,9 +2,11 @@ import mongoose from "mongoose";
 import express from "express";
 import dotenv from "dotenv";
 import route from "./controllers/mainRoute";
+import cors from "cors";
 dotenv.config();
 
 const app = express();
+if (process.env.NODE_ENV !== "production") app.use(cors());
 const port = process.env.PORT || 8000;
 const databaseType =
   process.env.NODE_ENV === "production"
