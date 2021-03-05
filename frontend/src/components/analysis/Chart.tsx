@@ -56,6 +56,7 @@ const Chart = (props: ChartProps) => {
           data={props.data.filter(
             (d) => d.time >= zoomXDomain[0] && d.time <= zoomXDomain[1]
           )}
+          interpolation="basis"
           x="time"
           y="speed"
         />
