@@ -3,6 +3,7 @@ import { getComments } from "../twitch_api/getComments";
 import express from "express";
 import getVodInfo from "../twitch_api/getVodInfo";
 import ChatSpeed from "../models/ChatSpeed";
+
 const router = express.Router();
 const getRouter = () => {
   router.get(`/search/:id`, async (req, res) => {
@@ -13,6 +14,7 @@ const getRouter = () => {
     }
   });
   router.get(`/search/speed/:id`, async (req, res) => {
+    req.setTimeout(0);
     const vodInfo = await getVodInfo(req.params.id);
     if (vodInfo) {
       const chatSpeed = await ChatSpeed.findOne({ vodID: req.params.id });
