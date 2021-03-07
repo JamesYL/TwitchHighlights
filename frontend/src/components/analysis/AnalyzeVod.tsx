@@ -7,10 +7,12 @@ import { useWidth, useHeight } from "../../util/getDimensions";
 import { getSpeeds, Speed } from "../../services/speeds";
 import ErrorPage from "../util/ErrorPage";
 import { Slider, Typography } from "@material-ui/core";
+import { flattenSpeed } from "./flattenSpeed";
 const AnalyzeVod = () => {
   const [data, setData] = React.useState<Speed[]>([]);
   const [isErr, setIsErr] = React.useState(false);
   const [chartSize, setChartSize] = React.useState(3);
+  const [flatten, setFlatten] = React.useState(1);
   const width = useWidth();
   const height = useHeight();
   // @ts-ignore
@@ -18,7 +20,8 @@ const AnalyzeVod = () => {
   React.useEffect(() => {
     (async () => {
       try {
-        setData(await getSpeeds(vodID));
+        const speeds = await getSpeeds(vodID);
+        setData(speeds);
       } catch (err) {
         setIsErr(true);
       }
@@ -36,8 +39,8 @@ const AnalyzeVod = () => {
             <Slider
               value={chartSize}
               marks={[
-                { value: 1, label: "Biggest" },
-                { value: 4, label: "Smallest" },
+                { value: 1, label: "Taller graph" },
+                { value: 4, label: "Shorter graph" },
               ]}
               min={1}
               max={4}
@@ -47,9 +50,23 @@ const AnalyzeVod = () => {
               }}
               aria-labelledby="slider for chart size"
             />
+            <Slider
+              value={flatten}
+              marks={[
+                { value: 1, label: "Most detailed" },
+                { value: 100, label: "Least detailed" },
+              ]}
+              min={1}
+              max={100}
+              defaultValue={1}
+              onChange={(_, newVal: number | number[]) => {
+                setFlatten(newVal as number);
+              }}
+              aria-labelledby="slider for flatten size"
+            />
           </div>
           <Chart
-            data={data}
+            data={flattenSpeed(data, flatten)}
             width={width}
             height={height / chartSize ** 0.75}
           />

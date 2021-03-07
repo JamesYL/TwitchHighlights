@@ -5,6 +5,7 @@ import {
   createContainer,
   VictoryZoomContainerProps,
   VictoryVoronoiContainerProps,
+  VictoryLabel,
 } from "victory";
 import React from "react";
 import { Speed } from "../../services/speeds";
@@ -37,6 +38,7 @@ const Chart = (props: ChartProps) => {
   return (
     <>
       <VictoryChart
+        padding={{ top: 50, left: 80, right: 50, bottom: 50 }}
         width={props.width}
         height={props.height}
         domain={getEntireDomain()}
@@ -50,7 +52,12 @@ const Chart = (props: ChartProps) => {
           />
         }
       >
-        <VictoryAxis dependentAxis label="Messages" tickFormat={(x) => x} />
+        <VictoryAxis
+          dependentAxis
+          label="Messages"
+          tickFormat={(x) => x}
+          axisLabelComponent={<VictoryLabel dy={-20} />}
+        />
         <VictoryAxis label="Time (s)" />
         <VictoryLine
           data={props.data.filter(
