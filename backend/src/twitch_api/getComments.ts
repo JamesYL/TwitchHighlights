@@ -94,14 +94,6 @@ export const getComments = async (
     for(let i = 1; i <= DIVISIONS; i++){
       allComments.push(getComments(videoId, observable, start + (i-1) * d / DIVISIONS, start + i * d / DIVISIONS))
     }
-    // const first = getComments(videoId, observable, start, end - 2 * d / 3);
-    // const second = getComments(videoId, observable, end - 2 * d / 3, end - d/3);
-    // const third = getComments(videoId, observable, end - d/3, end);
-    // return Promise.all([first, second, third]).then((comments) => {
-    //   comments[1].push(...comments[2]);
-    //   comments[0].push(...comments[1]);
-    //   return comments[0];
-    // });
     return Promise.all(allComments).then((comments) =>{
       return comments.reduce((acc, curr) =>{
         acc.push(...curr)
@@ -110,41 +102,3 @@ export const getComments = async (
     })
   }
 };
-
-// export const getComments = async (
-//   videoId: string | number,
-//   observable: Observable = null,
-//   start = 0,
-//   end = 200000
-// ): Promise<Comment[]> => {
-//   let data = await getFirstComments(videoId, start);
-
-//   let ans : Comment[] = []
-//   while(data){
-    
-//     data.comments
-//     .filter(
-//       ({ content_offset_seconds }) =>
-//         start <= content_offset_seconds && content_offset_seconds < end
-//     )
-//     .map(({ content_offset_seconds, _id, message }) => {
-//       return {
-//         content_offset_seconds,
-//         _id,
-//         message: { body: message.body },
-//       };
-//     })
-//     .forEach(comment =>{
-//       ans.push(comment)
-//     })
-//     if (!data._next){
-//       break
-//     }
-//     console.log(data.comments[0].content_offset_seconds);
-    
-//     data = await getNext(videoId, data._next)
-//   }
-
-// return ans
-
-// }
