@@ -48,7 +48,7 @@ const AnalyzeVod = () => {
               onChange={(_, newVal: number | number[]) => {
                 setChartSize(newVal as number);
               }}
-              aria-labelledby="slider for chart size"
+              aria-labelledby="chart size"
             />
             <Slider
               value={flatten}
@@ -62,7 +62,7 @@ const AnalyzeVod = () => {
               onChange={(_, newVal: number | number[]) => {
                 setFlatten(newVal as number);
               }}
-              aria-labelledby="slider for flatten size"
+              aria-labelledby="flatten size"
             />
           </div>
           <Chart

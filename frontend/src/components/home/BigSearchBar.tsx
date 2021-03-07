@@ -3,17 +3,19 @@ import { Theme, makeStyles, IconButton } from "@material-ui/core";
 import styled from "styled-components";
 import { useHistory } from "react-router-dom";
 import SearchIcon from "@material-ui/icons/Search";
-import Notification from "./Notification";
+import Notification from "../util/Notification";
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
     border: "1px solid lightgrey",
     borderRadius: 30,
-    maxWidth: 600,
     display: "flex",
     width: "100%",
+    maxWidth: 800,
   },
   button: {
     marginLeft: "auto",
+    marginTop: theme.spacing(2),
+    marginBottom: theme.spacing(2),
   },
 }));
 const Input = styled.input`
@@ -26,10 +28,10 @@ const Input = styled.input`
   ::-ms-clear {
     display: none;
   }
-  font-size: 16px;
+  font-size: 25px;
   font-family: "Roboto", "Helvetica", "Arial", sans-serif;
 `;
-const SearchBar = () => {
+const BigSearchBar = () => {
   const history = useHistory();
   const classes = useStyles();
   const [isErr, setIsErr] = React.useState(false);
@@ -59,7 +61,7 @@ const SearchBar = () => {
         onKeyDown={(e) => {
           if (e.key === "Enter") handleSubmit();
         }}
-        placeholder="Enter twitch vod URL"
+        placeholder="Analyze Vod: Enter twitch vod URL"
       />
       <IconButton onClick={handleSubmit} className={classes.button}>
         <SearchIcon />
@@ -72,4 +74,4 @@ const SearchBar = () => {
     </div>
   );
 };
-export default SearchBar;
+export default BigSearchBar;
