@@ -6,8 +6,9 @@ import SearchIcon from "@material-ui/icons/Search";
 import Notification from "../util/Notification";
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
-    border: "1px solid lightgrey",
-    borderRadius: 30,
+    border: "1px solid #696969",
+    borderRadius: 25,
+    backgroundColor: "white",
     display: "flex",
     width: "100%",
     maxWidth: 800,
@@ -24,11 +25,11 @@ const Input = styled.input`
   margin-left: 20px;
   outline-style: none;
   box-shadow: none;
-  border-color: transparent;
+  border-color: "transparent";
   ::-ms-clear {
     display: none;
   }
-  font-size: 25px;
+  font-size: calc(0.75em + 1vmin);
   font-family: "Roboto", "Helvetica", "Arial", sans-serif;
 `;
 const BigSearchBar = () => {

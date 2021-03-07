@@ -3,6 +3,7 @@ import ReactDOM from "react-dom";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter as Router } from "react-router-dom";
+document.body.style.backgroundColor = "azure";
 ReactDOM.render(
   <Router>
     <App />

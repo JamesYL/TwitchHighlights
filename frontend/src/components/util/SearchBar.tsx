@@ -7,10 +7,11 @@ import Notification from "./Notification";
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
     border: "1px solid lightgrey",
-    borderRadius: 30,
+    borderRadius: 25,
     maxWidth: 600,
     display: "flex",
     width: "100%",
+    background: "white",
   },
   button: {
     marginLeft: "auto",
