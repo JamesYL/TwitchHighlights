@@ -25,7 +25,7 @@ export interface VodInfo {
   };
 }
 
-export default async (id: number | string): Promise<VodInfo> => {
+const getVodInfo = async (id: number | string): Promise<VodInfo | null> => {
   const url = `https://api.twitch.tv/v5/videos/${id}`;
   try {
     const output: VodInfo = {
@@ -67,3 +67,4 @@ export default async (id: number | string): Promise<VodInfo> => {
     return null;
   }
 };
+export default getVodInfo;

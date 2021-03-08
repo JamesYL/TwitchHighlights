@@ -21,11 +21,12 @@ const AnalyzeVod = () => {
   React.useEffect(() => {
     (async () => {
       try {
-        const speedsData = await getSpeeds(vodID);
-        setData(speedsData.speeds);
-        setYmax(Math.max(...speedsData.speeds.map((item) => item.speed)));
-        if (speedsData.loading) setCommentsLoaded(speedsData.numCommentsLoaded);
-        else setCommentsLoaded(null);
+        const speedsData = await getSpeeds(vodID, (prog, completed) => {
+          if (completed) setCommentsLoaded(null);
+          else setCommentsLoaded(prog);
+        });
+        setData(speedsData);
+        setYmax(Math.max(...speedsData.map((item) => item.speed)));
       } catch (err) {
         setIsErr(true);
       }

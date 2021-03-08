@@ -44,7 +44,7 @@ const getNext = async (
 };
 export const getComments = async (
   videoId: string | number,
-  observable: Observable = null,
+  observable: Observable | null = null,
   start = 0,
   end = 200000
 ): Promise<Comment[]> => {
