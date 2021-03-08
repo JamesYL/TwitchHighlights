@@ -60,6 +60,7 @@ export const getComments = async (
           start <= content_offset_seconds && content_offset_seconds < end
       )
       .map(({ content_offset_seconds, _id, message }) => {
+        if (observable) observable.updateProgress(1);
         return {
           content_offset_seconds,
           _id,
@@ -78,6 +79,7 @@ export const getComments = async (
               start <= content_offset_seconds && content_offset_seconds < end
           )
           .map(({ content_offset_seconds, _id, message }) => {
+            if (observable) observable.updateProgress(1);
             return {
               content_offset_seconds,
               _id,
@@ -86,19 +88,25 @@ export const getComments = async (
           })
       );
     }
-    if (observable) observable.updateProgress(d);
     return comments;
   } else {
-    let allComments : Promise<Comment[]>[] = []
-    const DIVISIONS = 50
-    for(let i = 1; i <= DIVISIONS; i++){
-      allComments.push(getComments(videoId, observable, start + (i-1) * d / DIVISIONS, start + i * d / DIVISIONS))
+    let allComments: Promise<Comment[]>[] = [];
+    const DIVISIONS = 50;
+    for (let i = 1; i <= DIVISIONS; i++) {
+      allComments.push(
+        getComments(
+          videoId,
+          observable,
+          start + ((i - 1) * d) / DIVISIONS,
+          start + (i * d) / DIVISIONS
+        )
+      );
     }
-    return Promise.all(allComments).then((comments) =>{
-      return comments.reduce((acc, curr) =>{
-        acc.push(...curr)
+    return Promise.all(allComments).then((comments) => {
+      return comments.reduce((acc, curr) => {
+        acc.push(...curr);
         return acc;
-      })
-    })
+      });
+    });
   }
 };

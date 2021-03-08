@@ -4,28 +4,31 @@ import SearchBar from "../util/SearchBar";
 import Chart from "./Chart";
 import { useWidth, useHeight } from "../../util/getDimensions";
 
-import { getSpeeds, Speed } from "../../services/speeds";
-import ErrorPage from "../util/ErrorPage";
+import { getSpeeds, SpeedPoint } from "../../services/speeds";
+import ErrorPage from "./ErrorPage";
 import { Slider, Typography } from "@material-ui/core";
 import { flattenSpeed } from "./flattenSpeed";
 const AnalyzeVod = () => {
-  const [data, setData] = React.useState<Speed[]>([]);
+  const [data, setData] = React.useState<SpeedPoint[]>([]);
   const [isErr, setIsErr] = React.useState(false);
   const [chartSize, setChartSize] = React.useState(3);
-  const [flatten, setFlatten] = React.useState(1);
+  const [flatten, setFlatten] = React.useState(5);
+  const [commentsLoaded, setCommentsLoaded] = React.useState<number | null>(-1);
   const width = useWidth();
   const height = useHeight();
-  // @ts-ignore
-  const { vodID } = useParams();
+  const { vodID } = useParams() as { vodID: string };
   React.useEffect(() => {
     (async () => {
       try {
-        const speeds = await getSpeeds(vodID);
-        setData(speeds);
+        const speedsData = await getSpeeds(vodID);
+        setData(speedsData.speeds);
+        if (speedsData.loading) setCommentsLoaded(speedsData.numCommentsLoaded);
+        else setCommentsLoaded(null);
       } catch (err) {
         setIsErr(true);
       }
     })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [vodID]);
   return (
     <>
@@ -54,10 +57,10 @@ const AnalyzeVod = () => {
               value={flatten}
               marks={[
                 { value: 1, label: "Most detailed" },
-                { value: 100, label: "Least detailed" },
+                { value: 30, label: "Least detailed" },
               ]}
               min={1}
-              max={100}
+              max={30}
               defaultValue={1}
               onChange={(_, newVal: number | number[]) => {
                 setFlatten(newVal as number);
@@ -65,11 +68,14 @@ const AnalyzeVod = () => {
               aria-labelledby="flatten size"
             />
           </div>
-          <Chart
-            data={flattenSpeed(data, flatten)}
-            width={width}
-            height={height / chartSize ** 0.75}
-          />
+          {commentsLoaded === null && (
+            <Chart
+              data={flattenSpeed(data, flatten)}
+              width={width}
+              height={height / chartSize ** 0.75}
+            />
+          )}
+          {commentsLoaded !== -1 && <div>Loaded {commentsLoaded} comments</div>}
         </>
       )}
     </>

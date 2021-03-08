@@ -8,9 +8,9 @@ import {
   VictoryLabel,
 } from "victory";
 import React from "react";
-import { Speed } from "../../services/speeds";
+import { SpeedPoint } from "../../services/speeds";
 interface ChartProps {
-  data: Speed[];
+  data: SpeedPoint[];
   width: number;
   height: number;
 }

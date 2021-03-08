@@ -1,9 +1,9 @@
-import { Speed } from "./../../services/speeds";
-export const flattenSpeed = (speeds: Speed[], flattenAmt: number) => {
-  const output: Speed[] = [];
+import { SpeedPoint } from "./../../services/speeds";
+export const flattenSpeed = (speeds: SpeedPoint[], flattenAmt: number) => {
+  const output: SpeedPoint[] = [];
   let i = 0;
   while (i < speeds.length) {
-    let tmp: Speed = { time: 0, speed: 0 };
+    let tmp: SpeedPoint = { time: 0, speed: 0 };
     for (let j = 0; j < flattenAmt; j++) {
       if (i === speeds.length) {
         output.push(tmp);
