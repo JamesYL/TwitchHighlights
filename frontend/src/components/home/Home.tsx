@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Container,
   makeStyles,
@@ -88,7 +87,7 @@ const Home = () => {
       <CssBaseline />
       <div className={classes.background} />
       <Typography variant="h5" component="h4" className={classes.title}>
-        Twitch Vod Analytics
+        Sreamalytics
       </Typography>
       <div className={classes.search}>
         <BigSearchBar />

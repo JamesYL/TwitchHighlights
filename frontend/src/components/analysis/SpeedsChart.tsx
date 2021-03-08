@@ -7,17 +7,19 @@ import {
   VictoryVoronoiContainerProps,
   VictoryLabel,
 } from "victory";
+import { DomainPropType } from "victory-core";
 import React from "react";
-import { SpeedPoint } from "../../services/speeds";
+import { getSpeeds } from "../../services/speeds";
 import { Slider, Typography } from "@material-ui/core";
-import { flattenSpeed } from "./flattenSpeed";
+import { Comment } from "../../twitch_api/getComments";
 
 interface ChartProps {
-  data: SpeedPoint[];
+  data: Comment[];
   width: number;
   height: number;
 }
 const Chart = (props: ChartProps) => {
+  const MIN_FLATTEN = 4;
   const [flatten, setFlatten] = React.useState(5);
   const VictoryZoomVoronoiContainer = createContainer<
     VictoryZoomContainerProps,
@@ -26,15 +28,13 @@ const Chart = (props: ChartProps) => {
   const [zoomXDomain, setZoomXDomain] = React.useState<
     [number, number] | [Date, Date]
   >([0, 1000000]);
-  interface Domain {
-    y: [number, number];
-    x: [number, number];
-  }
-  const getEntireDomain = (): Domain | undefined => {
+  const getEntireDomain = (): DomainPropType | undefined => {
     if (props.data.length) {
       return {
-        y: [0, Math.max(...props.data.map((item) => item.speed))],
-        x: [props.data[0].time, props.data[props.data.length - 1].time],
+        x: [
+          props.data[0].content_offset_seconds,
+          props.data[props.data.length - 1].content_offset_seconds,
+        ],
       };
     }
   };
@@ -43,12 +43,12 @@ const Chart = (props: ChartProps) => {
       <Slider
         value={flatten}
         marks={[
-          { value: 1, label: "Most detailed" },
+          { value: MIN_FLATTEN, label: "Most detailed" },
           { value: 30, label: "Least detailed" },
         ]}
-        min={1}
+        min={MIN_FLATTEN}
         max={30}
-        defaultValue={1}
+        defaultValue={flatten}
         onChange={(_, newVal: number | number[]) => {
           setFlatten(newVal as number);
         }}
@@ -80,15 +80,19 @@ const Chart = (props: ChartProps) => {
         />
         <VictoryAxis label="Time (s)" />
         <VictoryLine
-          data={flattenSpeed(
-            props.data.filter(
-              (d) => d.time >= zoomXDomain[0] && d.time <= zoomXDomain[1]
-            ),
-            flatten
+          data={getSpeeds(props.data, flatten).filter(
+            (d) => d.time >= zoomXDomain[0] && d.time <= zoomXDomain[1]
           )}
           interpolation="basis"
           x="time"
           y="speed"
+        />
+        <VictoryLabel
+          text="Number of Messages Throughout the Vod"
+          x={props.width / 2}
+          y={30}
+          style={{ fontSize: 18 }}
+          textAnchor="middle"
         />
       </VictoryChart>
     </>

@@ -10,10 +10,11 @@ export interface SpeedPoint {
   time: number;
   speed: number;
 }
+
 export const getCommentsData = async (
   id: string,
   onUpdate: OnUpdate | null
-) => {
+): Promise<Comment[]> => {
   const observ = new Observable(onUpdate);
   const vod = await getVodInfo(id);
   if (!vod) return [];
@@ -21,7 +22,8 @@ export const getCommentsData = async (
   observ.finish();
   return comments;
 };
-export const getSpeeds = async (comments: Comment[], increment = 4) => {
+
+export const getSpeeds = (comments: Comment[], increment = 4) => {
   if (comments.length === 0 || increment === 0) return [];
   const lastSecond = comments[comments.length - 1].content_offset_seconds;
   const output: number[] = Array(~~(lastSecond / increment) + 5).fill(0);

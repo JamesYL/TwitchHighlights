@@ -4,10 +4,11 @@ import SearchBar from "../util/SearchBar";
 import Chart from "./SpeedsChart";
 import { useWidth, useHeight } from "../../util/getDimensions";
 
-import { getCommentsData, getSpeeds, SpeedPoint } from "../../services/speeds";
+import { getCommentsData } from "../../services/speeds";
+import { Comment } from "../../twitch_api/getComments";
 import ErrorPage from "./ErrorPage";
 const AnalyzeVod = () => {
-  const [data, setData] = React.useState<SpeedPoint[]>([]);
+  const [comments, setComments] = React.useState<Comment[]>([]);
   const [isErr, setIsErr] = React.useState(false);
   const [commentsLoaded, setCommentsLoaded] = React.useState<number | null>(-1);
   const width = useWidth();
@@ -20,8 +21,7 @@ const AnalyzeVod = () => {
           if (completed) setCommentsLoaded(null);
           else setCommentsLoaded(prog);
         });
-        const speedsData = await getSpeeds(comments);
-        setData(speedsData);
+        setComments(comments);
       } catch (err) {
         setIsErr(true);
       }
@@ -35,7 +35,7 @@ const AnalyzeVod = () => {
       ) : (
         <>
           {commentsLoaded === null && (
-            <Chart data={data} width={width} height={height / 3} />
+            <Chart data={comments} width={width} height={height / 3} />
           )}
           {commentsLoaded !== null && commentsLoaded !== -1 && (
             <div>Loaded {commentsLoaded} comments</div>
