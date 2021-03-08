@@ -13,6 +13,7 @@ const AnalyzeVod = () => {
   const [isErr, setIsErr] = React.useState(false);
   const [chartSize, setChartSize] = React.useState(3);
   const [flatten, setFlatten] = React.useState(5);
+  const [ymax, setYmax] = React.useState(5);
   const [commentsLoaded, setCommentsLoaded] = React.useState<number | null>(-1);
   const width = useWidth();
   const height = useHeight();
@@ -22,6 +23,7 @@ const AnalyzeVod = () => {
       try {
         const speedsData = await getSpeeds(vodID);
         setData(speedsData.speeds);
+        setYmax(Math.max(...speedsData.speeds.map((item) => item.speed)));
         if (speedsData.loading) setCommentsLoaded(speedsData.numCommentsLoaded);
         else setCommentsLoaded(null);
       } catch (err) {
@@ -73,6 +75,7 @@ const AnalyzeVod = () => {
               data={flattenSpeed(data, flatten)}
               width={width}
               height={height / chartSize ** 0.75}
+              ymax={ymax}
             />
           )}
           {commentsLoaded !== -1 && <div>Loaded {commentsLoaded} comments</div>}

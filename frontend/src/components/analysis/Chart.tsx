@@ -13,6 +13,7 @@ interface ChartProps {
   data: SpeedPoint[];
   width: number;
   height: number;
+  ymax: number
 }
 const Chart = (props: ChartProps) => {
   const VictoryZoomVoronoiContainer = createContainer<
@@ -28,9 +29,8 @@ const Chart = (props: ChartProps) => {
   }
   const getEntireDomain = (): Domain | undefined => {
     if (props.data.length) {
-      const speed = props.data.map((item) => item.speed);
       return {
-        y: [Math.min(...speed), Math.max(...speed)],
+        y: [0, props.ymax],
         x: [props.data[0].time, props.data[props.data.length - 1].time],
       };
     }
