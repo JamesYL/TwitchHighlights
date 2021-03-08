@@ -1,19 +1,33 @@
 import {
+  AppBar,
+  Badge,
   Container,
+  IconButton,
   makeStyles,
-  Typography,
   Theme,
-  CssBaseline,
+  Toolbar,
+  Tooltip,
+  Typography,
 } from "@material-ui/core";
 import BigSearchBar from "./BigSearchBar";
+import BookmarksIcon from "@material-ui/icons/Bookmarks";
+
 const useStyles = makeStyles((theme: Theme) => ({
+  bar: {
+    animation: `$comeDown 2000ms`,
+    position: "fixed",
+    top: 0,
+    left: 0,
+    flexGrow: 1,
+    background: "transparent",
+  },
   title: {
     fontFamily: "Alfa Slab One, cursive",
-    position: "fixed",
-    top: theme.spacing(2),
-    left: theme.spacing(2),
-    animation: `$comeDown 2000ms`,
     color: "white",
+    [theme.breakpoints.up("sm")]: {
+      display: "block",
+    },
+    marginRight: theme.spacing(2),
   },
   root: {
     display: "flex",
@@ -79,16 +93,32 @@ const useStyles = makeStyles((theme: Theme) => ({
     animation: "$gradient 30s ease infinite",
     overflow: "hidden",
   },
+  grow: {
+    flexGrow: 1,
+  },
 }));
 const Home = () => {
   const classes = useStyles();
   return (
     <Container maxWidth={false} className={classes.root}>
-      <CssBaseline />
+      <div>
+        <AppBar position="static" className={classes.bar} elevation={0}>
+          <Toolbar>
+            <Typography className={classes.title} variant="h6">
+              Streamalytics
+            </Typography>
+            <div className={classes.grow} />
+            <Tooltip title="Saved vods" aria-label="saved vods">
+              <IconButton aria-label="show saved vod analytics" color="inherit">
+                <Badge badgeContent={0} color="secondary">
+                  <BookmarksIcon />
+                </Badge>
+              </IconButton>
+            </Tooltip>
+          </Toolbar>
+        </AppBar>
+      </div>
       <div className={classes.background} />
-      <Typography variant="h5" component="h4" className={classes.title}>
-        Sreamalytics
-      </Typography>
       <div className={classes.search}>
         <BigSearchBar />
       </div>

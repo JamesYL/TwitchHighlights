@@ -1,6 +1,5 @@
 import React from "react";
 import { Theme, makeStyles, IconButton } from "@material-ui/core";
-import styled from "styled-components";
 import { useHistory } from "react-router-dom";
 import SearchIcon from "@material-ui/icons/Search";
 import Notification from "../util/Notification";
@@ -8,30 +7,30 @@ const useStyles = makeStyles((theme: Theme) => ({
   root: {
     border: "1px solid #696969",
     borderRadius: 25,
-    backgroundColor: "white",
     display: "flex",
     width: "100%",
     maxWidth: 800,
+    background: theme.palette.background.paper,
   },
   button: {
     marginLeft: "auto",
     marginTop: theme.spacing(2),
     marginBottom: theme.spacing(2),
   },
+  input: {
+    border: 0,
+    flex: 1,
+    marginLeft: 20,
+    outlineStyle: "none",
+    boxShadow: "none",
+    borderColor: "transparent",
+    "input::-ms-clear": {
+      display: "none",
+    },
+    fontSize: "calc(0.75em + 1vmin)",
+    background: theme.palette.background.paper,
+  },
 }));
-const Input = styled.input`
-  border: 0;
-  flex: 1;
-  margin-left: 20px;
-  outline-style: none;
-  box-shadow: none;
-  border-color: "transparent";
-  ::-ms-clear {
-    display: none;
-  }
-  font-size: calc(0.75em + 1vmin);
-  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
-`;
 const BigSearchBar = () => {
   const history = useHistory();
   const classes = useStyles();
@@ -56,7 +55,8 @@ const BigSearchBar = () => {
 
   return (
     <div className={classes.root}>
-      <Input
+      <input
+        className={classes.input}
         type="text"
         onChange={(e) => setVodVal(e.target.value)}
         onKeyDown={(e) => {

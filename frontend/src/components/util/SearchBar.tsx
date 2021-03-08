@@ -1,6 +1,5 @@
 import React from "react";
 import { Theme, makeStyles, IconButton } from "@material-ui/core";
-import styled from "styled-components";
 import { useHistory } from "react-router-dom";
 import SearchIcon from "@material-ui/icons/Search";
 import Notification from "./Notification";
@@ -11,25 +10,25 @@ const useStyles = makeStyles((theme: Theme) => ({
     maxWidth: 600,
     display: "flex",
     width: "100%",
-    background: "white",
+    background: theme.palette.background.paper,
   },
   button: {
     marginLeft: "auto",
   },
+  input: {
+    border: 0,
+    flex: 1,
+    marginLeft: 20,
+    outlineStyle: "none",
+    boxShadow: "none",
+    borderColor: "transparent",
+    "input::-ms-clear": {
+      display: "none",
+    },
+    fontSize: 16,
+    background: theme.palette.background.paper,
+  },
 }));
-const Input = styled.input`
-  border: 0;
-  flex: 1;
-  margin-left: 20px;
-  outline-style: none;
-  box-shadow: none;
-  border-color: transparent;
-  ::-ms-clear {
-    display: none;
-  }
-  font-size: 16px;
-  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
-`;
 const SearchBar = () => {
   const history = useHistory();
   const classes = useStyles();
@@ -54,13 +53,14 @@ const SearchBar = () => {
 
   return (
     <div className={classes.root}>
-      <Input
+      <input
         type="text"
         onChange={(e) => setVodVal(e.target.value)}
         onKeyDown={(e) => {
           if (e.key === "Enter") handleSubmit();
         }}
         placeholder="Enter twitch vod URL"
+        className={classes.input}
       />
       <IconButton onClick={handleSubmit} className={classes.button}>
         <SearchIcon />

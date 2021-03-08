@@ -1,12 +1,13 @@
-import React from "react";
 import Home from "./components/home/Home";
 import "fontsource-roboto";
 import { Switch, Route } from "react-router-dom";
 import AnalyzeVod from "./components/analysis/AnalyzeVod";
 import { StylesProvider } from "@material-ui/core/styles";
+import { CssBaseline } from "@material-ui/core";
 const App = () => {
   return (
     <>
+      <CssBaseline />
       <StylesProvider injectFirst>
         <Switch>
           <Route path="/search/:vodID">

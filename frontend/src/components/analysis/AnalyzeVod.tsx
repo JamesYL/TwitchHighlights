@@ -6,7 +6,6 @@ import { useWidth, useHeight } from "../../util/getDimensions";
 import { getCommentsData } from "../../services/speeds";
 import { Comment } from "../../twitch_api/getComments";
 import ErrorPage from "./ErrorPage";
-import { CssBaseline } from "@material-ui/core";
 const AnalyzeVod = () => {
   const [comments, setComments] = React.useState<Comment[]>([]);
   const [isErr, setIsErr] = React.useState(false);
@@ -29,7 +28,6 @@ const AnalyzeVod = () => {
   }, [vodID]);
   return (
     <>
-      <CssBaseline />
       <Navbar />
       {isErr ? (
         <ErrorPage />

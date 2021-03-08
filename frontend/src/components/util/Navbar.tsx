@@ -4,7 +4,6 @@ import Toolbar from "@material-ui/core/Toolbar";
 import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
 import Badge from "@material-ui/core/Badge";
-import MenuIcon from "@material-ui/icons/Menu";
 import BookmarksIcon from "@material-ui/icons/Bookmarks";
 import SearchBar from "./SearchBar";
 import { Tooltip } from "@material-ui/core";
@@ -18,7 +17,8 @@ const useStyles = makeStyles((theme: Theme) =>
       marginRight: theme.spacing(2),
     },
     title: {
-      display: "none",
+      fontFamily: "Alfa Slab One, cursive",
+      color: "white",
       [theme.breakpoints.up("sm")]: {
         display: "block",
       },
@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export default function PrimarySearchAppBar() {
+export default function Navbar() {
   const classes = useStyles();
 
   return (
