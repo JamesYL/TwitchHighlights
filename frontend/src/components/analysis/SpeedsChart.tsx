@@ -10,15 +10,14 @@ import {
 import { DomainPropType } from "victory-core";
 import React from "react";
 import {
-  getSpeeds,
   convertToSpeedPoint,
   flattenSpeeds,
+  Speed,
 } from "../../services/speeds";
 import { Slider, Typography } from "@material-ui/core";
-import { Comment } from "../../twitch_api/getComments";
 
 interface ChartProps {
-  data: Comment[];
+  data: Speed;
   width: number;
   height: number;
 }
@@ -32,22 +31,18 @@ const Chart = (props: ChartProps) => {
     [number, number] | [Date, Date]
   >([0, 1000000]);
   const getEntireDomain = (): DomainPropType | undefined => {
-    if (props.data.length) {
+    if (props.data.speeds.length)
       return {
-        x: [
-          props.data[0].content_offset_seconds,
-          props.data[props.data.length - 1].content_offset_seconds,
-        ],
+        x: [0, props.data.speeds.length * props.data.increment],
       };
-    }
   };
   return (
     <>
       <Slider
         value={flatten}
         marks={[
-          { value: 1, label: "Most detailed" },
-          { value: 10, label: "Least detailed" },
+          { value: 1, label: "Most detailed (More lag)" },
+          { value: 10, label: "Least detailed (Less lag)" },
         ]}
         min={1}
         max={10}
@@ -83,9 +78,9 @@ const Chart = (props: ChartProps) => {
         />
         <VictoryAxis label="Time (s)" />
         <VictoryLine
-          data={convertToSpeedPoint(
-            flattenSpeeds(getSpeeds(props.data), flatten)
-          ).filter((d) => d.time >= zoomXDomain[0] && d.time <= zoomXDomain[1])}
+          data={convertToSpeedPoint(flattenSpeeds(props.data, flatten)).filter(
+            (d) => d.time >= zoomXDomain[0] && d.time <= zoomXDomain[1]
+          )}
           interpolation="basis"
           x="time"
           y="speed"

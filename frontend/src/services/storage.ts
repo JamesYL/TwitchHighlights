@@ -5,6 +5,14 @@ const STORAGE_KEY = "vods";
 export interface SingleVodInfo {
   speeds: Speed;
 }
+export const getGenericSingleVodInfo = (): SingleVodInfo => {
+  return {
+    speeds: {
+      increment: 1,
+      speeds: [],
+    },
+  };
+};
 interface StoredVodsInfo {
   [vodID: string]: SingleVodInfo;
 }
@@ -44,4 +52,10 @@ export const addOrUpdateVod = (
 };
 export const clearVods = () => {
   window.localStorage.removeItem(STORAGE_KEY);
+};
+export const getSingleVodInfo = (
+  vodID: string | number
+): SingleVodInfo | undefined => {
+  const vodObj = getVodsObject();
+  if (vodID in vodObj) return vodObj[vodID];
 };
