@@ -6,11 +6,14 @@ import getVodInfo from "../twitch_api/getVodInfo";
 // const baseUrl =
 //   process.env.NODE_ENV === "production" ? "" : "http://localhost:8000";
 
+export interface Speed {
+  increment: number;
+  speeds: number[];
+}
 export interface SpeedPoint {
   time: number;
   speed: number;
 }
-
 export const getCommentsData = async (
   id: string,
   onUpdate: OnUpdate | null
@@ -23,19 +26,33 @@ export const getCommentsData = async (
   return comments;
 };
 
-export const getSpeeds = (comments: Comment[], increment = 4) => {
-  if (comments.length === 0 || increment === 0) return [];
+export const getSpeeds = (comments: Comment[], increment = 4): Speed => {
+  if (comments.length === 0) return { increment, speeds: [] };
   const lastSecond = comments[comments.length - 1].content_offset_seconds;
-  const output: number[] = Array(~~(lastSecond / increment) + 5).fill(0);
+  const speeds: number[] = Array(~~(lastSecond / increment) + 2).fill(0);
   comments.forEach((comment) => {
     const time = comment.content_offset_seconds;
-    output[~~(time / increment)] += 1 / increment;
+    speeds[~~(time / increment)] += 1 / increment;
   });
-  const actualOutput: SpeedPoint[] = [];
-  let time = 0;
-  output.forEach((item) => {
-    actualOutput.push({ time: time, speed: item });
-    time += increment;
-  });
-  return actualOutput;
+  return { increment, speeds };
+};
+export const flattenSpeeds = (speed: Speed, flattenFactor: number): Speed => {
+  const dividedSpeeds: number[] = speed.speeds.map(
+    (item) => item / flattenFactor
+  );
+  const newSpeeds: number[] = [];
+  let i = 0;
+  while (i < dividedSpeeds.length) {
+    let tmp = 0;
+    for (let j = 0; j < flattenFactor; j++) {
+      if (i === dividedSpeeds.length) break;
+      tmp += dividedSpeeds[i];
+      i++;
+    }
+    newSpeeds.push(tmp);
+  }
+  return { increment: speed.increment * flattenFactor, speeds: newSpeeds };
+};
+export const convertToSpeedPoint = (speed: Speed): SpeedPoint[] => {
+  return speed.speeds.map((s, i) => ({ time: i * speed.increment, speed: s }));
 };

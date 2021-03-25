@@ -3,9 +3,11 @@ import { useParams } from "react-router-dom";
 import Navbar from "../util/Navbar";
 import Chart from "./SpeedsChart";
 import { useWidth, useHeight } from "../../util/getDimensions";
-import { getCommentsData } from "../../services/speeds";
+import { getCommentsData, getSpeeds } from "../../services/speeds";
 import { Comment } from "../../twitch_api/getComments";
 import ErrorPage from "./ErrorPage";
+import { Button } from "@material-ui/core";
+import { addOrUpdateVod } from "../../services/storage";
 const AnalyzeVod = () => {
   const [comments, setComments] = React.useState<Comment[]>([]);
   const [isErr, setIsErr] = React.useState(false);
@@ -13,22 +15,28 @@ const AnalyzeVod = () => {
   const width = useWidth();
   const height = useHeight();
   const { vodID } = useParams() as { vodID: string };
-  React.useEffect(() => {
-    (async () => {
-      try {
-        const comments = await getCommentsData(vodID, (prog, completed) => {
-          if (completed) setCommentsLoaded(null);
-          else setCommentsLoaded(prog);
-        });
-        setComments(comments);
-      } catch (err) {
-        setIsErr(true);
-      }
-    })();
-  }, [vodID]);
+  const loadComments = async () => {
+    try {
+      const comments = await getCommentsData(vodID, (prog, completed) => {
+        if (completed) setCommentsLoaded(null);
+        else setCommentsLoaded(prog);
+      });
+      setComments(comments);
+    } catch (err) {
+      setIsErr(true);
+    }
+  };
+  const saveVod = async () => {
+    const vodInfo = {
+      speeds: getSpeeds(comments),
+    };
+    const res = addOrUpdateVod(vodID, vodInfo);
+  };
   return (
     <>
       <Navbar />
+      <Button onClick={loadComments}>load comments</Button>
+      <Button onClick={saveVod}>Save vod</Button>
       {isErr ? (
         <ErrorPage />
       ) : (

@@ -9,7 +9,11 @@ import {
 } from "victory";
 import { DomainPropType } from "victory-core";
 import React from "react";
-import { getSpeeds } from "../../services/speeds";
+import {
+  getSpeeds,
+  convertToSpeedPoint,
+  flattenSpeeds,
+} from "../../services/speeds";
 import { Slider, Typography } from "@material-ui/core";
 import { Comment } from "../../twitch_api/getComments";
 
@@ -19,8 +23,7 @@ interface ChartProps {
   height: number;
 }
 const Chart = (props: ChartProps) => {
-  const MIN_FLATTEN = 4;
-  const [flatten, setFlatten] = React.useState(5);
+  const [flatten, setFlatten] = React.useState(1);
   const VictoryZoomVoronoiContainer = createContainer<
     VictoryZoomContainerProps,
     VictoryVoronoiContainerProps
@@ -43,11 +46,11 @@ const Chart = (props: ChartProps) => {
       <Slider
         value={flatten}
         marks={[
-          { value: MIN_FLATTEN, label: "Most detailed" },
-          { value: 30, label: "Least detailed" },
+          { value: 1, label: "Most detailed" },
+          { value: 10, label: "Least detailed" },
         ]}
-        min={MIN_FLATTEN}
-        max={30}
+        min={1}
+        max={10}
         defaultValue={flatten}
         onChange={(_, newVal: number | number[]) => {
           setFlatten(newVal as number);
@@ -80,9 +83,9 @@ const Chart = (props: ChartProps) => {
         />
         <VictoryAxis label="Time (s)" />
         <VictoryLine
-          data={getSpeeds(props.data, flatten).filter(
-            (d) => d.time >= zoomXDomain[0] && d.time <= zoomXDomain[1]
-          )}
+          data={convertToSpeedPoint(
+            flattenSpeeds(getSpeeds(props.data), flatten)
+          ).filter((d) => d.time >= zoomXDomain[0] && d.time <= zoomXDomain[1])}
           interpolation="basis"
           x="time"
           y="speed"
