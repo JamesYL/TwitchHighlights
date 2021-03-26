@@ -13,6 +13,9 @@ export interface Comment {
   message: {
     body: string;
   };
+  commenter: {
+    display_name: string;
+  };
 }
 
 // This is used to get the first few comments based on time
@@ -59,12 +62,15 @@ export const getComments = async (
         ({ content_offset_seconds }) =>
           start <= content_offset_seconds && content_offset_seconds < end
       )
-      .map(({ content_offset_seconds, _id, message }) => {
+      .map(({ content_offset_seconds, _id, message, commenter }) => {
         if (observable) observable.updateProgress(1);
         return {
           content_offset_seconds,
           _id,
           message: { body: message.body },
+          commenter: {
+            display_name: commenter.display_name,
+          },
         };
       });
 
@@ -78,12 +84,15 @@ export const getComments = async (
             ({ content_offset_seconds }) =>
               start <= content_offset_seconds && content_offset_seconds < end
           )
-          .map(({ content_offset_seconds, _id, message }) => {
+          .map(({ content_offset_seconds, _id, message, commenter }) => {
             if (observable) observable.updateProgress(1);
             return {
               content_offset_seconds,
               _id,
               message: { body: message.body },
+              commenter: {
+                display_name: commenter.display_name,
+              },
             };
           })
       );

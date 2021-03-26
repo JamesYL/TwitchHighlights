@@ -13,6 +13,7 @@ import {
   SingleVodInfo,
 } from "../../services/storage";
 import Notification from "../util/Notification";
+import { Comment } from "../../twitch_api/getComments";
 const AnalyzeVod = () => {
   const [vodInfo, setVodInfo] = React.useState<SingleVodInfo>(
     getGenericSingleVodInfo()
@@ -21,6 +22,7 @@ const AnalyzeVod = () => {
   const [commentsLoaded, setCommentsLoaded] = React.useState<number | null>(-1); // -1 is nothing has started, null means finished loading
   const [saveErr, setSaveErr] = React.useState(false);
   const [saveMsg, setSaveMsg] = React.useState("");
+  const [comments, setComments] = React.useState<Comment[] | null>(null);
   const width = useWidth();
   const height = useHeight();
   const { vodID } = useParams() as { vodID: string };
@@ -31,12 +33,15 @@ const AnalyzeVod = () => {
         if (completed) setCommentsLoaded(null);
         else setCommentsLoaded(prog);
       });
+      setComments(comments);
       const vodObj = {
         speeds: getSpeeds(comments),
       };
       setVodInfo(vodObj);
+      return comments;
     } catch (err) {
       setIsErr(true);
+      return [];
     }
   };
   React.useEffect(() => {
@@ -64,6 +69,27 @@ const AnalyzeVod = () => {
       }
     }
   };
+  const downloadComments = async () => {
+    let loadedComments = comments;
+    if (!loadedComments) loadedComments = await getCommentsData(vodID, null);
+    if (loadedComments.length) {
+      const content = `VodID: ${vodID}\n${loadedComments
+        .map(
+          (item) =>
+            `${item.commenter.display_name}[${item.content_offset_seconds}s]: ${item.message.body}`
+        )
+        .join("\n")}`;
+      const element = document.createElement("a");
+      const file = new Blob([content], {
+        type: "text/plain;charset=utf-8",
+      });
+      element.href = URL.createObjectURL(file);
+      element.download = "comments.txt";
+      document.body.appendChild(element);
+      element.click();
+      document.body.removeChild(element);
+    }
+  };
   return (
     <>
       <Navbar />
@@ -71,7 +97,7 @@ const AnalyzeVod = () => {
         <ErrorPage />
       ) : (
         <>
-          <Button onClick={loadComments}>load comments</Button>
+          <Button onClick={downloadComments}>Download comments</Button>
           <Button onClick={saveVod}>Save vod</Button>
           {commentsLoaded === null && (
             <SpeedsChart
