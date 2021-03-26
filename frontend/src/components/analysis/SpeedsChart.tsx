@@ -20,6 +20,7 @@ interface ChartProps {
   data: Speed;
   width: number;
   height: number;
+  vodID: string | number;
 }
 const Chart = (props: ChartProps) => {
   const [flatten, setFlatten] = React.useState(1);
@@ -34,6 +35,7 @@ const Chart = (props: ChartProps) => {
     if (props.data.speeds.length)
       return {
         x: [0, props.data.speeds.length * props.data.increment],
+        y: [0, Math.max(...props.data.speeds) + 1],
       };
   };
   return (
@@ -81,7 +83,7 @@ const Chart = (props: ChartProps) => {
           data={convertToSpeedPoint(flattenSpeeds(props.data, flatten)).filter(
             (d) => d.time >= zoomXDomain[0] && d.time <= zoomXDomain[1]
           )}
-          interpolation="basis"
+          interpolation="natural"
           x="time"
           y="speed"
         />

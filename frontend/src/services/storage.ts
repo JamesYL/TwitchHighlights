@@ -31,10 +31,11 @@ const getVodsObject = (): StoredVodsInfo => {
 const saveVods = (vod: StoredVodsInfo): string => {
   try {
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(vod));
+    return "";
   } catch (e) {
+    console.log("test");
     return e.name;
   }
-  return "";
 };
 export const removeVod = (vodID: string | number) => {
   const vodsObj = getVodsObject();
@@ -42,6 +43,9 @@ export const removeVod = (vodID: string | number) => {
     delete vodsObj[vodID];
   }
 };
+/**
+ * @returns DOMException name, or empty string for success
+ */
 export const addOrUpdateVod = (
   vodID: string | number,
   vodInfo: SingleVodInfo

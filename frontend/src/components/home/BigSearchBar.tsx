@@ -50,6 +50,7 @@ const BigSearchBar = () => {
     }
     if (filtered) {
       history.push(`/search/${filtered}`);
+      history.go(0);
     } else setIsErr(true);
   };
 
