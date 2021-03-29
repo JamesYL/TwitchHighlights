@@ -2,10 +2,12 @@ import { Speed } from "./speeds";
 const STORAGE_KEY = "vods";
 
 export interface SingleVodInfo {
+  vodID: string | number;
   speeds: Speed;
 }
 export const getGenericSingleVodInfo = (): SingleVodInfo => {
   return {
+    vodID: -1,
     speeds: {
       increment: 1,
       speeds: [],
@@ -41,16 +43,14 @@ export const removeVod = (vodID: string | number) => {
   if (vodID in vodsObj) {
     delete vodsObj[vodID];
   }
+  saveVods(vodsObj);
 };
 /**
  * @returns DOMException name, or empty string for success
  */
-export const addOrUpdateVod = (
-  vodID: string | number,
-  vodInfo: SingleVodInfo
-) => {
+export const addOrUpdateVod = (vodInfo: SingleVodInfo) => {
   const vodObj = getVodsObject();
-  vodObj[vodID] = vodInfo;
+  vodObj[vodInfo.vodID] = vodInfo;
   return saveVods(vodObj);
 };
 export const clearVods = () => {

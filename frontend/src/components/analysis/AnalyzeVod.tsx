@@ -37,6 +37,7 @@ const AnalyzeVod = () => {
       });
       setComments(comments);
       const vodObj = {
+        vodID,
         speeds: getSpeeds(comments),
       };
       setVodInfo(vodObj);
@@ -57,7 +58,8 @@ const AnalyzeVod = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [vodID]);
   const saveVod = async () => {
-    const res = addOrUpdateVod(vodID, vodInfo);
+    if (getSingleVodInfo(vodID)) return; // Already exists
+    const res = addOrUpdateVod(vodInfo);
     if (res === "") {
       setBookmarkNum(bookmarkNum + 1);
       return;
@@ -100,14 +102,17 @@ const AnalyzeVod = () => {
       ) : (
         <>
           <Button onClick={downloadComments}>Download comments</Button>
-          <Button onClick={saveVod}>Save vod</Button>
+
           {commentsLoaded === null && (
-            <SpeedsChart
-              data={vodInfo.speeds}
-              width={Math.max(1000, width)}
-              height={Math.max(height / 3, 400)}
-              vodID={vodID}
-            />
+            <>
+              <Button onClick={saveVod}>Save vod</Button>
+              <SpeedsChart
+                data={vodInfo.speeds}
+                width={Math.max(1000, width)}
+                height={Math.max(height / 3, 400)}
+                vodID={vodID}
+              />
+            </>
           )}
           {commentsLoaded !== null && commentsLoaded !== -1 && (
             <div>Loaded {commentsLoaded} comments</div>

@@ -56,7 +56,6 @@ export const getComments = async (
     return [];
   } else if (d < 5000) {
     let data = await getFirstComments(videoId, start);
-    if (!data._next && !data._prev) return [];
     const comments: Comment[] = data.comments
       .filter(
         ({ content_offset_seconds }) =>
