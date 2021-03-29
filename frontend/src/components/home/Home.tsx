@@ -1,16 +1,6 @@
-import {
-  AppBar,
-  Badge,
-  Container,
-  IconButton,
-  makeStyles,
-  Theme,
-  Toolbar,
-  Tooltip,
-  Typography,
-} from "@material-ui/core";
+import { Container, makeStyles, Theme } from "@material-ui/core";
 import BigSearchBar from "./BigSearchBar";
-import BookmarksIcon from "@material-ui/icons/Bookmarks";
+import Navbar from "../util/Navbar";
 
 const useStyles = makeStyles((theme: Theme) => ({
   bar: {
@@ -19,6 +9,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     top: 0,
     left: 0,
     flexGrow: 1,
+    width: "100%",
     background: "transparent",
   },
   title: {
@@ -100,29 +91,17 @@ const useStyles = makeStyles((theme: Theme) => ({
 const Home = () => {
   const classes = useStyles();
   return (
-    <Container maxWidth={false} className={classes.root}>
-      <div>
-        <AppBar position="static" className={classes.bar} elevation={0}>
-          <Toolbar>
-            <Typography className={classes.title} variant="h6">
-              Streamalytics
-            </Typography>
-            <div className={classes.grow} />
-            <Tooltip title="Saved vods" aria-label="saved vods">
-              <IconButton aria-label="show saved vod analytics" color="inherit">
-                <Badge badgeContent={0} color="secondary">
-                  <BookmarksIcon />
-                </Badge>
-              </IconButton>
-            </Tooltip>
-          </Toolbar>
-        </AppBar>
+    <>
+      <div className={classes.bar}>
+        <Navbar transparent disableSearch />
       </div>
-      <div className={classes.background} />
-      <div className={classes.search}>
-        <BigSearchBar />
-      </div>
-    </Container>
+      <Container maxWidth={false} className={classes.root}>
+        <div className={classes.background} />
+        <div className={classes.search}>
+          <BigSearchBar />
+        </div>
+      </Container>
+    </>
   );
 };
 

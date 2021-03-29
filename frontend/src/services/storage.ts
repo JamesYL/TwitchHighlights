@@ -1,5 +1,4 @@
 import { Speed } from "./speeds";
-
 const STORAGE_KEY = "vods";
 
 export interface SingleVodInfo {
@@ -62,4 +61,15 @@ export const getSingleVodInfo = (
 ): SingleVodInfo | undefined => {
   const vodObj = getVodsObject();
   if (vodID in vodObj) return vodObj[vodID];
+};
+export const getAllVods = (): SingleVodInfo[] => {
+  const vods: SingleVodInfo[] = [];
+  const vodObj = getVodsObject();
+  for (const key in vodObj) {
+    vods.push(vodObj[key]);
+  }
+  return vods;
+};
+export const getNumVods = () => {
+  return Object.keys(getVodsObject()).length;
 };

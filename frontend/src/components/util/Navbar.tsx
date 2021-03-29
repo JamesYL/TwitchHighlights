@@ -8,7 +8,9 @@ import BookmarksIcon from "@material-ui/icons/Bookmarks";
 import SearchBar from "./SearchBar";
 import { Tooltip } from "@material-ui/core";
 import { useHistory } from "react-router";
-
+import { getNumVods } from "../../services/storage";
+import React from "react";
+import Link from "@material-ui/core/Link";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     grow: {
@@ -34,26 +36,43 @@ const useStyles = makeStyles((theme: Theme) =>
       marginBottom: theme.spacing(1),
       width: "100%",
     },
+    appbar: (props: NavProp) => {
+      if (props.transparent) {
+        return {
+          background: "transparent",
+        };
+      }
+      return {};
+    },
   })
 );
-
-export default function Navbar() {
+interface NavProp {
+  transparent?: boolean;
+  disableSearch?: boolean;
+  bookmarkNum?: number;
+}
+export default function Navbar(props: NavProp) {
   const history = useHistory();
-  const classes = useStyles();
+  const classes = useStyles(props);
   const clickBookmark = () => {
     history.push(`/bookmarks`);
     history.go(0);
   };
+
   return (
     <div className={classes.root}>
-      <AppBar position="static">
+      <AppBar position="static" className={classes.appbar} elevation={0}>
         <Toolbar>
           <Typography className={classes.title} variant="h6">
-            Streamalytics
+            <Link href="/" color="inherit" variant="inherit">
+              Streamalytics
+            </Link>
           </Typography>
-          <div className={classes.search}>
-            <SearchBar />
-          </div>
+          {!props.disableSearch && (
+            <div className={classes.search}>
+              <SearchBar />
+            </div>
+          )}
           <div className={classes.grow} />
           <Tooltip title="Saved vods" aria-label="saved vods">
             <IconButton
@@ -61,7 +80,12 @@ export default function Navbar() {
               color="inherit"
               onClick={clickBookmark}
             >
-              <Badge badgeContent={1} color="secondary">
+              <Badge
+                badgeContent={
+                  props.bookmarkNum ? props.bookmarkNum : getNumVods()
+                }
+                color="secondary"
+              >
                 <BookmarksIcon />
               </Badge>
             </IconButton>

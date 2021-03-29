@@ -9,6 +9,7 @@ import { Button } from "@material-ui/core";
 import {
   addOrUpdateVod,
   getGenericSingleVodInfo,
+  getNumVods,
   getSingleVodInfo,
   SingleVodInfo,
 } from "../../services/storage";
@@ -23,6 +24,7 @@ const AnalyzeVod = () => {
   const [saveErr, setSaveErr] = React.useState(false);
   const [saveMsg, setSaveMsg] = React.useState("");
   const [comments, setComments] = React.useState<Comment[] | null>(null);
+  const [bookmarkNum, setBookmarkNum] = React.useState(getNumVods());
   const width = useWidth();
   const height = useHeight();
   const { vodID } = useParams() as { vodID: string };
@@ -55,18 +57,18 @@ const AnalyzeVod = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [vodID]);
   const saveVod = async () => {
-    if (vodInfo) {
-      const res = addOrUpdateVod(vodID, vodInfo);
-      if (res === "") return;
-      else if (res === "QuotaExceededError") {
-        setSaveErr(true);
-        setSaveMsg(
-          "Not enough memory to save the vod, remove some vods in bookmarks"
-        );
-      } else {
-        setSaveErr(true);
-        setSaveMsg(`ERROR: Could not save vod due to ${vodInfo}`);
-      }
+    const res = addOrUpdateVod(vodID, vodInfo);
+    if (res === "") {
+      setBookmarkNum(bookmarkNum + 1);
+      return;
+    } else if (res === "QuotaExceededError") {
+      setSaveErr(true);
+      setSaveMsg(
+        "Not enough memory to save the vod, remove some vods in bookmarks"
+      );
+    } else {
+      setSaveErr(true);
+      setSaveMsg(`ERROR: Could not save vod due to ${vodInfo}`);
     }
   };
   const downloadComments = async () => {
@@ -92,7 +94,7 @@ const AnalyzeVod = () => {
   };
   return (
     <>
-      <Navbar />
+      <Navbar bookmarkNum={bookmarkNum} />
       {isErr ? (
         <ErrorPage />
       ) : (
