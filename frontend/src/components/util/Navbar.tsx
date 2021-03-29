@@ -7,6 +7,7 @@ import Badge from "@material-ui/core/Badge";
 import BookmarksIcon from "@material-ui/icons/Bookmarks";
 import SearchBar from "./SearchBar";
 import { Tooltip } from "@material-ui/core";
+import { useHistory } from "react-router";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -37,8 +38,12 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 export default function Navbar() {
+  const history = useHistory();
   const classes = useStyles();
-
+  const clickBookmark = () => {
+    history.push(`/bookmarks`);
+    history.go(0);
+  };
   return (
     <div className={classes.root}>
       <AppBar position="static">
@@ -51,7 +56,11 @@ export default function Navbar() {
           </div>
           <div className={classes.grow} />
           <Tooltip title="Saved vods" aria-label="saved vods">
-            <IconButton aria-label="show saved vod analytics" color="inherit">
+            <IconButton
+              aria-label="show saved vod analytics"
+              color="inherit"
+              onClick={clickBookmark}
+            >
               <Badge badgeContent={1} color="secondary">
                 <BookmarksIcon />
               </Badge>
