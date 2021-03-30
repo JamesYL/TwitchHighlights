@@ -73,7 +73,8 @@ const Bookmark = () => {
                     <>
                       <CardContent>
                         <Typography variant="subtitle1">
-                          Could not find vod with vod id {vod.vodID}
+                          Could not find vod with vod id {vod.vodID} (Vod might
+                          have expired)
                         </Typography>
                       </CardContent>
                       <CardActions>

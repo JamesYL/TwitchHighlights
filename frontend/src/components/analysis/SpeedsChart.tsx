@@ -14,16 +14,14 @@ import {
   flattenSpeeds,
   Speed,
 } from "../../services/speeds";
-import { Slider, Typography } from "@material-ui/core";
+import { useWidth } from "../../util/getDimensions";
 
 interface ChartProps {
   data: Speed;
-  width: number;
-  height: number;
   vodID: string | number;
+  flatten: number;
 }
 const Chart = (props: ChartProps) => {
-  const [flatten, setFlatten] = React.useState(1);
   const VictoryZoomVoronoiContainer = createContainer<
     VictoryZoomContainerProps,
     VictoryVoronoiContainerProps
@@ -35,32 +33,27 @@ const Chart = (props: ChartProps) => {
     if (props.data.speeds.length)
       return {
         x: [0, props.data.speeds.length * props.data.increment],
-        y: [0, Math.max(...props.data.speeds) + 1],
+        y: [0, Math.max(...props.data.speeds) + 0.5],
       };
   };
+  const windowWidth = useWidth();
+  const [width, setWidth] = React.useState(0);
+  const graphRef = React.useCallback(
+    (node) => {
+      if (node !== null) {
+        setWidth(node.getBoundingClientRect().width);
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [windowWidth]
+  );
+
   return (
-    <>
-      <Slider
-        value={flatten}
-        marks={[
-          { value: 1, label: "Most detailed (More lag)" },
-          { value: 10, label: "Least detailed (Less lag)" },
-        ]}
-        min={1}
-        max={10}
-        defaultValue={flatten}
-        onChange={(_, newVal: number | number[]) => {
-          setFlatten(newVal as number);
-        }}
-        aria-labelledby="flatten size"
-      />
-      <div style={{ width: 200, marginLeft: 20 }}>
-        <Typography>Zoom in and drag to check graph</Typography>
-      </div>
+    <div style={{ width: "100%", height: "100%" }} ref={graphRef}>
       <VictoryChart
+        height={300}
+        width={width}
         padding={{ top: 50, left: 80, right: 50, bottom: 50 }}
-        width={props.width}
-        height={props.height}
         domain={getEntireDomain()}
         containerComponent={
           <VictoryZoomVoronoiContainer
@@ -80,22 +73,15 @@ const Chart = (props: ChartProps) => {
         />
         <VictoryAxis label="Time (s)" />
         <VictoryLine
-          data={convertToSpeedPoint(flattenSpeeds(props.data, flatten)).filter(
-            (d) => d.time >= zoomXDomain[0] && d.time <= zoomXDomain[1]
-          )}
+          data={convertToSpeedPoint(
+            flattenSpeeds(props.data, props.flatten)
+          ).filter((d) => d.time >= zoomXDomain[0] && d.time <= zoomXDomain[1])}
           interpolation="natural"
           x="time"
           y="speed"
         />
-        <VictoryLabel
-          text="Number of Messages Throughout the Vod"
-          x={props.width / 2}
-          y={30}
-          style={{ fontSize: 18 }}
-          textAnchor="middle"
-        />
       </VictoryChart>
-    </>
+    </div>
   );
 };
 
