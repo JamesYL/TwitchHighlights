@@ -15,9 +15,9 @@ if (process.env.NODE_ENV !== "production")
     app.use(cors_1.default());
 const port = process.env.PORT || 8000;
 if (process.env.NODE_ENV === "production") {
-    app.use(express_1.default.static(path_1.default.join(__dirname, "build")));
+    app.use(express_1.default.static("build"));
     app.get("*", function (_, res) {
-        res.sendFile(path_1.default.join(__dirname, "build", "index.html"));
+        res.sendFile(path_1.default.join(__dirname, "..", "build", "index.html"));
     });
 }
 // const databaseType =

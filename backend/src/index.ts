@@ -11,9 +11,9 @@ const app = express();
 if (process.env.NODE_ENV !== "production") app.use(cors());
 const port = process.env.PORT || 8000;
 if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname, "build")));
+  app.use(express.static("build"));
   app.get("*", function (_, res) {
-    res.sendFile(path.join(__dirname, "build", "index.html"));
+    res.sendFile(path.join(__dirname, "..", "build", "index.html"));
   });
 }
 // const databaseType =
