@@ -10,18 +10,18 @@ dotenv.config();
 const app = express();
 if (process.env.NODE_ENV !== "production") app.use(cors());
 const port = process.env.PORT || 8000;
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname, "build")));
+  app.get("*", function (_, res) {
+    res.sendFile(path.join(__dirname, "build", "index.html"));
+  });
+}
 // const databaseType =
 //   process.env.NODE_ENV === "production"
 //     ? "twitchhighlights"
 //     : process.env.NODE_ENV === "development"
 //     ? "twitchhighlightsdev"
 //     : "twtichhighlightstest";
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static("build"));
-  app.get("*", function (_, res) {
-    res.sendFile(path.join(__dirname, "build", "index.html"));
-  });
-}
 
 // mongoose
 //   .connect(
