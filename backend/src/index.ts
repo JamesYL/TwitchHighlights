@@ -1,8 +1,10 @@
-// import mongoose from "mongoose";
 import express from "express";
 import dotenv from "dotenv";
-// import route from "./controllers/mainRoute";
 import cors from "cors";
+import path from "path";
+// import route from "./controllers/mainRoute";
+// import mongoose from "mongoose";
+
 dotenv.config();
 
 const app = express();
@@ -14,7 +16,13 @@ const port = process.env.PORT || 8000;
 //     : process.env.NODE_ENV === "development"
 //     ? "twitchhighlightsdev"
 //     : "twtichhighlightstest";
-if (process.env.NODE_ENV === "production") app.use(express.static("build"));
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static("build"));
+  app.get("*", function (_, res) {
+    res.sendFile(path.join(__dirname, "build", "index.html"));
+  });
+}
+
 // mongoose
 //   .connect(
 //     `mongodb+srv://${process.env.MONGODB_USER}:${process.env.MONGODB_PASSWORD}@cluster0.8ql8a.mongodb.net/${databaseType}?retryWrites=true&w=majority`,
