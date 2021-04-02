@@ -7,7 +7,7 @@ dotenv.config();
 
 const app = express();
 if (process.env.NODE_ENV !== "production") app.use(cors());
-// const port = process.env.PORT || 8000;
+const port = process.env.PORT || 8000;
 // const databaseType =
 //   process.env.NODE_ENV === "production"
 //     ? "twitchhighlights"
@@ -35,3 +35,5 @@ if (process.env.NODE_ENV === "production") app.use(express.static("build"));
 //   .catch((err) =>
 //     console.error("Failed to connect to MongoDB: " + err.message)
 //   );
+
+app.listen(port);
