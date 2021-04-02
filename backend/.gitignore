@@ -1,7 +1,5 @@
 node_modules
 .env
-dist
-build
 
 __testing_file__.ts
 __testing_output__.txt
