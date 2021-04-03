@@ -3,7 +3,13 @@ import { useParams } from "react-router-dom";
 import Navbar from "../util/Navbar";
 import { getCommentsData, getSpeeds } from "../../services/speeds";
 import ErrorVodPage from "./ErrorVodPage";
-import { Container, Grid, Typography } from "@material-ui/core";
+import {
+  Container,
+  Grid,
+  makeStyles,
+  Typography,
+  Theme,
+} from "@material-ui/core";
 import {
   addOrUpdateVod,
   getGenericSingleVodInfo,
@@ -15,7 +21,14 @@ import Notification from "../util/Notification";
 import { Comment } from "../../twitch_api/getComments";
 import VodInfoCard from "./VodInfoCard";
 import SpeedsChartCard from "./SpeedsChartCard";
+const useStyles = makeStyles((theme: Theme) => ({
+  loadedText: {
+    margin: theme.spacing(5),
+    fontFamily: "'Delta Gothic One', cursive",
+  },
+}));
 const AnalyzeVod = () => {
+  const classes = useStyles();
   const [vodInfo, setVodInfo] = React.useState<SingleVodInfo>(
     getGenericSingleVodInfo()
   );
@@ -68,7 +81,7 @@ const AnalyzeVod = () => {
       );
     } else {
       setSaveErr(true);
-      setSaveMsg(`ERROR: Could not save vod due to ${vodInfo}`);
+      setSaveMsg(`ERROR: Could not save vod due to ${res}`);
     }
   };
   const downloadComments = async () => {
@@ -102,34 +115,37 @@ const AnalyzeVod = () => {
         {isErr ? (
           <ErrorVodPage />
         ) : (
-          <Grid container spacing={3}>
-            {commentsLoaded === -1 && (
-              <>
-                <Grid item xs={5} md={5} xl={5}>
-                  <VodInfoCard
-                    vodID={vodID}
-                    elevation={5}
-                    downloadComments={downloadComments}
-                    saveVod={saveVod}
-                  />
-                </Grid>
-                <Grid item xs={12} xl={6}>
-                  <SpeedsChartCard elevation={5} vodInfo={vodInfo} />
-                </Grid>
-              </>
-            )}
+          <>
+            <Grid container spacing={3}>
+              {commentsLoaded === -1 && (
+                <>
+                  <Grid item xs={5} md={5} xl={5}>
+                    <VodInfoCard
+                      vodID={vodID}
+                      elevation={5}
+                      downloadComments={downloadComments}
+                      saveVod={saveVod}
+                    />
+                  </Grid>
+                  <Grid item xs={12} xl={6}>
+                    <SpeedsChartCard elevation={5} vodInfo={vodInfo} />
+                  </Grid>
+                </>
+              )}
+            </Grid>
             {commentsLoaded >= 0 && (
-              <Typography component="h2" variant="h4">
-                Loaded {commentsLoaded} comments
+              <Typography
+                component="h2"
+                variant="h4"
+                align="center"
+                className={classes.loadedText}
+              >
+                Loaded {commentsLoaded} comments...
               </Typography>
             )}
-            <Notification
-              message={saveMsg}
-              setOpen={setSaveErr}
-              open={saveErr}
-            />
-          </Grid>
+          </>
         )}
+        <Notification message={saveMsg} setOpen={setSaveErr} open={saveErr} />
       </Container>
     </>
   );

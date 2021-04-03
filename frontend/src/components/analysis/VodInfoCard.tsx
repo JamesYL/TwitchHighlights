@@ -97,7 +97,7 @@ const VodInfoCard = ({
           download comments
         </Button>
         <Button size="small" color="primary" onClick={saveVod}>
-          save vod
+          save analytics
         </Button>
       </CardActions>
     </Card>

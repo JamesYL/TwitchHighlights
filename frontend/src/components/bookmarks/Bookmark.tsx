@@ -155,8 +155,9 @@ const Bookmark = () => {
                         size="small"
                         color="primary"
                         onClick={() => {
-                          history.push(`/search/${vod.vodID}`);
-                          history.go(0);
+                          window.open(
+                            `${process.env.PUBLIC_URL}/search/${vod.vodID}`
+                          );
                         }}
                       >
                         Analytics
