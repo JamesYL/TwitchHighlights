@@ -20,16 +20,16 @@ const AnalyzeVod = () => {
     getGenericSingleVodInfo()
   );
   const [isErr, setIsErr] = React.useState(false);
-  const [commentsLoaded, setCommentsLoaded] = React.useState<number | null>(0); // null means finished loading
+  // -1 (done loading) >= 0 (number of comments that have been loaded)
+  const [commentsLoaded, setCommentsLoaded] = React.useState<number>(-2);
   const [saveErr, setSaveErr] = React.useState(false);
   const [saveMsg, setSaveMsg] = React.useState("");
   const [comments, setComments] = React.useState<Comment[] | null>(null);
   const [bookmarkNum, setBookmarkNum] = React.useState(getNumVods());
   const { vodID } = useParams() as { vodID: string };
   const loadComments = async () => {
-    setCommentsLoaded(0);
     const comments = await getCommentsData(vodID, (prog, completed) => {
-      if (completed) setCommentsLoaded(null);
+      if (completed) setCommentsLoaded(-1);
       else setCommentsLoaded(prog);
     });
     if (comments === null) {
@@ -48,7 +48,7 @@ const AnalyzeVod = () => {
   React.useEffect(() => {
     const vodObj = getSingleVodInfo(vodID);
     if (vodObj) {
-      setCommentsLoaded(null);
+      setCommentsLoaded(-1);
       setVodInfo(vodObj);
     } else {
       loadComments();
@@ -103,7 +103,7 @@ const AnalyzeVod = () => {
           <ErrorVodPage />
         ) : (
           <Grid container spacing={3}>
-            {commentsLoaded === null ? (
+            {commentsLoaded === -1 && (
               <>
                 <Grid item xs={5} md={5} xl={5}>
                   <VodInfoCard
@@ -117,9 +117,8 @@ const AnalyzeVod = () => {
                   <SpeedsChartCard elevation={5} vodInfo={vodInfo} />
                 </Grid>
               </>
-            ) : (
-              <div>Loaded {commentsLoaded} comments</div>
             )}
+            {commentsLoaded >= 0 && <div>Loaded {commentsLoaded} comments</div>}
             <Notification
               message={saveMsg}
               setOpen={setSaveErr}
