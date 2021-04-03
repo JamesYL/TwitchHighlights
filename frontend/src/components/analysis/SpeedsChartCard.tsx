@@ -6,6 +6,7 @@ import {
   Slider,
   CardContent,
   Theme,
+  CardActions,
 } from "@material-ui/core";
 import SpeedsChart from "./SpeedsChart";
 
@@ -17,10 +18,22 @@ interface SpeedsChartCardProps {
 }
 const useStyles = makeStyles((theme: Theme) => ({
   slider: {
-    paddingLeft: theme.spacing(5),
+    paddingLeft: theme.spacing(10),
     paddingRight: theme.spacing(5),
-    width: 200,
+    width: 250,
     margin: 0,
+  },
+  header: {
+    paddingBottom: 0,
+  },
+  chart: {
+    marginTop: -40,
+    paddingBottom: 0,
+  },
+  action: {
+    margin: 0,
+    padding: 0,
+    marginBottom: theme.spacing(1),
   },
 }));
 const SpeedsChartCard = ({ vodInfo, elevation }: SpeedsChartCardProps) => {
@@ -37,14 +50,22 @@ const SpeedsChartCard = ({ vodInfo, elevation }: SpeedsChartCardProps) => {
             Zoom in and drag to check out the graph
           </Typography>
         }
+        className={classes.header}
       />
-      <CardContent>
+      <CardContent className={classes.chart}>
+        <SpeedsChart
+          data={vodInfo.speeds}
+          flatten={flatten}
+          vodID={vodInfo.vodID}
+        />
+      </CardContent>
+      <CardActions className={classes.action}>
         <div className={classes.slider}>
           <Slider
             value={flatten}
             marks={[
-              { value: 1, label: "More detailed" },
-              { value: 10, label: "Less detailed" },
+              { value: 1, label: "Most detailed" },
+              { value: 10, label: "Least detailed" },
             ]}
             min={1}
             max={10}
@@ -55,12 +76,7 @@ const SpeedsChartCard = ({ vodInfo, elevation }: SpeedsChartCardProps) => {
             aria-labelledby="flatten size"
           />
         </div>
-        <SpeedsChart
-          data={vodInfo.speeds}
-          flatten={flatten}
-          vodID={vodInfo.vodID}
-        />
-      </CardContent>
+      </CardActions>
     </Card>
   );
 };

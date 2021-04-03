@@ -15,7 +15,6 @@ import {
   CardContent,
 } from "@material-ui/core";
 import React from "react";
-import { useHistory } from "react-router";
 import {
   getAllVods,
   removeVod as removeVodFromStorage,
@@ -29,7 +28,6 @@ const useStyles = makeStyles({
   },
 });
 const Bookmark = () => {
-  const history = useHistory();
   const [allVods, setAllVods] = React.useState(getAllVods());
   const [vodInfo, setVodInfo] = React.useState<(VodInfo | null | number)[]>(
     Array(allVods.length).fill(-1)
