@@ -42,12 +42,8 @@ const Bookmark = () => {
     })();
   }, [allVods]);
   const removeVod = (vodID: string | number, index: number) => () => {
-    const vodInfoCpy = [...vodInfo];
-    const allVodsCpy = [...allVods];
-    vodInfoCpy.splice(index);
-    allVodsCpy.splice(index);
-    setVodInfo(vodInfoCpy);
-    setAllVods(allVodsCpy);
+    setVodInfo(vodInfo.filter((_, i) => i !== index));
+    setAllVods(allVods.filter((_, i) => i !== index));
     removeVodFromStorage(vodID);
   };
   const elevation = 5;

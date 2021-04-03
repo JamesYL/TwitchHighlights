@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import Navbar from "../util/Navbar";
 import { getCommentsData, getSpeeds } from "../../services/speeds";
 import ErrorVodPage from "./ErrorVodPage";
-import { Container, Grid } from "@material-ui/core";
+import { Container, Grid, Typography } from "@material-ui/core";
 import {
   addOrUpdateVod,
   getGenericSingleVodInfo,
@@ -118,7 +118,11 @@ const AnalyzeVod = () => {
                 </Grid>
               </>
             )}
-            {commentsLoaded >= 0 && <div>Loaded {commentsLoaded} comments</div>}
+            {commentsLoaded >= 0 && (
+              <Typography component="h2" variant="h4">
+                Loaded {commentsLoaded} comments
+              </Typography>
+            )}
             <Notification
               message={saveMsg}
               setOpen={setSaveErr}
