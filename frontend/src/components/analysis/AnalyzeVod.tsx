@@ -2,6 +2,7 @@ import React from "react";
 import { useParams } from "react-router-dom";
 import Navbar from "../util/Navbar";
 import { getCommentsData, getSpeeds } from "../../services/speeds";
+import { getKeywords } from "../../services/keywords";
 import ErrorVodPage from "./ErrorVodPage";
 import {
   Container,
@@ -21,6 +22,7 @@ import Notification from "../util/Notification";
 import { Comment } from "../../twitch_api/getComments";
 import VodInfoCard from "./VodInfoCard";
 import SpeedsChartCard from "./SpeedsChartCard";
+import KeywordsCard from "./KeywordsCard";
 const useStyles = makeStyles((theme: Theme) => ({
   loadedText: {
     margin: theme.spacing(5),
@@ -53,6 +55,7 @@ const AnalyzeVod = () => {
     const vodObj = {
       vodID,
       speeds: getSpeeds(comments as Comment[]),
+      mostCommonKeywords: getKeywords(comments as Comment[]),
     };
     setVodInfo(vodObj);
 
@@ -125,10 +128,14 @@ const AnalyzeVod = () => {
                       elevation={5}
                       downloadComments={downloadComments}
                       saveVod={saveVod}
+                      loadComments={loadComments}
                     />
                   </Grid>
                   <Grid item xs={12} xl={6}>
                     <SpeedsChartCard elevation={5} vodInfo={vodInfo} />
+                  </Grid>
+                  <Grid item xs={12} xl={6}>
+                    <KeywordsCard elevation={5} vodInfo={vodInfo} />
                   </Grid>
                 </>
               )}

@@ -1,9 +1,11 @@
+import { Keyword } from "./keywords";
 import { Speed } from "./speeds";
 const STORAGE_KEY = "vods";
 
 export interface SingleVodInfo {
   vodID: string | number;
   speeds: Speed;
+  mostCommonKeywords: Keyword[];
 }
 export const getGenericSingleVodInfo = (): SingleVodInfo => {
   return {
@@ -12,6 +14,7 @@ export const getGenericSingleVodInfo = (): SingleVodInfo => {
       increment: 1,
       speeds: [],
     },
+    mostCommonKeywords: [],
   };
 };
 interface StoredVodsInfo {
@@ -72,4 +75,8 @@ export const getAllVods = (): SingleVodInfo[] => {
 };
 export const getNumVods = () => {
   return Object.keys(getVodsObject()).length;
+};
+export const isVodSavedAlready = (id: string | number) => {
+  const vodObj = getVodsObject();
+  return id in vodObj;
 };
