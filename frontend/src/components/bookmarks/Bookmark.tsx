@@ -15,6 +15,7 @@ import {
   CardContent,
 } from "@material-ui/core";
 import React from "react";
+import { useHistory } from "react-router";
 import {
   getAllVods,
   removeVod as removeVodFromStorage,
@@ -52,6 +53,7 @@ const Bookmark = () => {
       </Grid>
     );
   };
+  const history = useHistory();
   return (
     <>
       <Navbar />
@@ -153,9 +155,8 @@ const Bookmark = () => {
                         size="small"
                         color="primary"
                         onClick={() => {
-                          window.open(
-                            `${process.env.PUBLIC_URL}/search/${vod.vodID}`
-                          );
+                          history.push(`/search/${vod.vodID}`);
+                          history.go(0);
                         }}
                       >
                         Analytics

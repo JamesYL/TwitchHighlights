@@ -2,8 +2,10 @@ import { Comment } from "./../twitch_api/getComments";
 import axios from "axios";
 import getVodInfo from "../twitch_api/getVodInfo";
 export interface Keyword {
-  x: string;
-  y: number;
+  color: string;
+  value: number;
+  title: string | number;
+  url: string;
 }
 export interface Emote {
   emoteName: string;
@@ -56,32 +58,68 @@ export const getKeywords = async (
           });
         });
       const output: Keyword[] = [];
+      const colours = [
+        "#2d080a",
+        "#c2f970",
+        "#7c3626",
+        "#a499b3",
+        "#f5853f",
+        "#89d2dc",
+        "#093824",
+        "#98a6d4",
+        "#ffcdbc",
+        "#6564db",
+      ];
       for (const key in emoteNumTimes) {
         output.push({
-          x: emoteMap[key].name,
-          y: (100 * emoteNumTimes[key]) / total,
+          title: emoteMap[key].name,
+          value: (100 * emoteNumTimes[key]) / total,
+          color: "#E38627",
+          url: emoteMap[key].url,
         });
       }
       output.sort((a, b) => {
-        if (a.y >= b.y) return -1;
+        if (a.value >= b.value) return -1;
         return 0;
       });
       const newOutput: Keyword[] = [];
       let otherPercent = 0;
       for (let i = 0; i < output.length; i++) {
-        if (output[i].y >= 2) {
-          newOutput.push(output[i]);
+        if (output[i].value >= 1) {
+          newOutput.push({
+            ...output[i],
+            color: colours[i % colours.length],
+          });
         } else {
-          otherPercent += output[i].y;
+          otherPercent += output[i].value;
         }
       }
       if (otherPercent > 0) {
-        newOutput.push({ x: "Other", y: otherPercent });
+        newOutput.push({
+          title: "Other",
+          value: otherPercent,
+          color: "#E38627",
+          url: "",
+        });
       }
       return newOutput;
     } catch (err) {
-      return [{ x: "Error", y: 100 }];
+      return [
+        {
+          title: "Error",
+          value: 100,
+          color: "#E38627",
+          url: "",
+        },
+      ];
     }
   }
-  return [{ x: "Error", y: 100 }];
+  return [
+    {
+      title: "Error",
+      value: 100,
+      color: "#E38627",
+      url: "",
+    },
+  ];
 };
