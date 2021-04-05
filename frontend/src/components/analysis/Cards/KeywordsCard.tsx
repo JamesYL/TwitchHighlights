@@ -7,10 +7,10 @@ import {
   Theme,
   CardActions,
 } from "@material-ui/core";
-import KeywordsChart from "./KeywordsChart";
+import KeywordsChart from "../Charts/KeywordsChart";
 
 import React from "react";
-import { SingleVodInfo } from "../../services/storage";
+import { SingleVodInfo } from "../../../services/storage";
 interface KeywordsChartProps {
   vodInfo: SingleVodInfo;
   elevation: number;

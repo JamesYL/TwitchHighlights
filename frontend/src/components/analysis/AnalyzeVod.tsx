@@ -20,9 +20,9 @@ import {
 } from "../../services/storage";
 import Notification from "../util/Notification";
 import { Comment } from "../../twitch_api/getComments";
-import VodInfoCard from "./VodInfoCard";
-import SpeedsChartCard from "./SpeedsChartCard";
-import KeywordsCard from "./KeywordsCard";
+import VodInfoCard from "./Cards/VodInfoCard";
+import SpeedsChartCard from "./Cards/SpeedsChartCard";
+import KeywordsCard from "./Cards/KeywordsCard";
 const useStyles = makeStyles((theme: Theme) => ({
   loadedText: {
     margin: theme.spacing(5),
@@ -55,7 +55,7 @@ const AnalyzeVod = () => {
     const vodObj = {
       vodID,
       speeds: getSpeeds(comments as Comment[]),
-      mostCommonKeywords: getKeywords(comments as Comment[]),
+      mostCommonKeywords: await getKeywords(vodID, comments as Comment[]),
     };
     setVodInfo(vodObj);
 
@@ -72,10 +72,14 @@ const AnalyzeVod = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [vodID]);
   const saveVod = async () => {
-    if (getSingleVodInfo(vodID)) return; // Already exists
+    let newBookmarkNum = bookmarkNum;
+    // Does not exist yet
+    if (!getSingleVodInfo(vodID)) {
+      newBookmarkNum++;
+    }
     const res = addOrUpdateVod(vodInfo);
     if (res === "") {
-      setBookmarkNum(bookmarkNum + 1);
+      setBookmarkNum(newBookmarkNum);
       return;
     } else if (res === "QuotaExceededError") {
       setSaveErr(true);

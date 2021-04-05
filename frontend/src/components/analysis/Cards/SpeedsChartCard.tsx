@@ -8,10 +8,10 @@ import {
   Theme,
   CardActions,
 } from "@material-ui/core";
-import SpeedsChart from "./SpeedsChart";
+import SpeedsChart from "../Charts/SpeedsChart";
 
 import React from "react";
-import { SingleVodInfo } from "../../services/storage";
+import { SingleVodInfo } from "../../../services/storage";
 interface SpeedsChartCardProps {
   vodInfo: SingleVodInfo;
   elevation: number;

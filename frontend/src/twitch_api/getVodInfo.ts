@@ -22,6 +22,7 @@ export interface VodInfo {
     display_name: string;
     logo: ImageURL;
     url: string;
+    _id: string;
   };
 }
 
@@ -47,6 +48,7 @@ const getVodInfo = async (id: number | string): Promise<VodInfo | null> => {
         display_name: "",
         logo: "",
         url: "",
+        _id: "",
       },
     };
     const data = (await axios.get(url, config)).data as VodInfo;

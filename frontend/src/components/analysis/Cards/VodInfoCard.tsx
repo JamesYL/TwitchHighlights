@@ -12,9 +12,9 @@ import {
   makeStyles,
 } from "@material-ui/core";
 import React from "react";
-import { isVodSavedAlready } from "../../services/storage";
-import { Comment } from "../../twitch_api/getComments";
-import getVodInfo, { VodInfo } from "../../twitch_api/getVodInfo";
+import { isVodSavedAlready } from "../../../services/storage";
+import { Comment } from "../../../twitch_api/getComments";
+import getVodInfo, { VodInfo } from "../../../twitch_api/getVodInfo";
 interface VodInfoCardProps {
   vodID: string | number;
   elevation: number;

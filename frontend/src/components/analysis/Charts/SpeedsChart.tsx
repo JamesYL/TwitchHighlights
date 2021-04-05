@@ -13,8 +13,8 @@ import {
   convertToSpeedPoint,
   flattenSpeeds,
   Speed,
-} from "../../services/speeds";
-import { useWidth } from "../../util/getDimensions";
+} from "../../../services/speeds";
+import { useWidth } from "../../../util/getDimensions";
 
 interface ChartProps {
   data: Speed;
