@@ -8,6 +8,7 @@ import mongoose from "mongoose";
 dotenv.config();
 
 const app = express();
+app.use("/api", route());
 if (process.env.NODE_ENV !== "production") app.use(cors());
 const port = process.env.PORT || 8000;
 if (process.env.NODE_ENV === "production") {
@@ -35,7 +36,6 @@ mongoose
   )
   .then(() => {
     console.log("Successfully connected to MongoDB");
-    app.use("/api", route());
     app.listen(port, () => {
       console.log(`server running on port ${port}`);
     });
