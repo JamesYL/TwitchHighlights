@@ -36,13 +36,7 @@ export const getKeywords = async (
       const emoteNumTimes = {};
       let total = 0;
       comments
-        .map(
-          (item) =>
-            item.message.body
-              .trim()
-              .toLowerCase()
-              .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "") //eslint-disable-line
-        )
+        .map((item) => item.message.body.trim().toLowerCase())
         .filter((msg) => msg.length > 0)
         .forEach((item) => {
           const split = item.split(" ");
