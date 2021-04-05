@@ -37,7 +37,6 @@ const saveVods = (vod: StoredVodsInfo): string => {
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(vod));
     return "";
   } catch (e) {
-    console.log("test");
     return e.name;
   }
 };
