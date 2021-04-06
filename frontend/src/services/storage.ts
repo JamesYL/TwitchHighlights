@@ -1,3 +1,4 @@
+import { openDb } from "../local_db/db";
 import { Keyword } from "./keywords";
 import { Speed } from "./speeds";
 const STORAGE_KEY = "vods";
@@ -21,6 +22,7 @@ interface StoredVodsInfo {
   [vodID: string]: SingleVodInfo;
 }
 const getVodsObject = (): StoredVodsInfo => {
+  openDb();
   const jsonStr = window.localStorage.getItem(STORAGE_KEY);
   if (!jsonStr) {
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify({}));
