@@ -2,9 +2,6 @@ import { OnUpdate } from "./../util/Observable";
 import { getComments, Comment } from "../twitch_api/getComments";
 import Observable from "../util/Observable";
 import getVodInfo from "../twitch_api/getVodInfo";
-// import axios from "axios";
-// const baseUrl =
-//   process.env.NODE_ENV === "production" ? "" : "http://localhost:8000";
 
 export interface Speed {
   increment: number;
