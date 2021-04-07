@@ -1,5 +1,7 @@
 import { OnUpdate } from "./../util/Observable";
 import { getComments, Comment } from "../twitch_api/getComments";
+import { Comment as CommentDB } from "../local_db/db";
+
 import Observable from "../util/Observable";
 import getVodInfo from "../twitch_api/getVodInfo";
 
@@ -23,12 +25,12 @@ export const getCommentsData = async (
   return comments;
 };
 
-export const getSpeeds = (comments: Comment[], increment = 4): Speed => {
+export const getSpeeds = (comments: CommentDB[], increment = 4): Speed => {
   if (comments.length === 0) return { increment, speeds: [] };
-  const lastSecond = comments[comments.length - 1].content_offset_seconds;
+  const lastSecond = comments[comments.length - 1].seconds;
   const speeds: number[] = Array(~~(lastSecond / increment) + 2).fill(0);
   comments.forEach((comment) => {
-    const time = comment.content_offset_seconds;
+    const time = comment.seconds;
     speeds[~~(time / increment)] += 1 / increment;
   });
   return { increment, speeds };

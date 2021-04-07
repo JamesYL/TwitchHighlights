@@ -11,9 +11,10 @@ import {
 import SpeedsChart from "../Charts/SpeedsChart";
 
 import React from "react";
-import { SingleVodInfo } from "../../../services/storage";
+import { VodWithAllInfo } from "../../../services/storage";
+import { getSpeeds } from "../../../services/speeds";
 interface SpeedsChartCardProps {
-  vodInfo: SingleVodInfo;
+  vodInfo: VodWithAllInfo;
   elevation: number;
 }
 const useStyles = makeStyles((theme: Theme) => ({
@@ -54,7 +55,7 @@ const SpeedsChartCard = ({ vodInfo, elevation }: SpeedsChartCardProps) => {
       />
       <CardContent className={classes.chart}>
         <SpeedsChart
-          data={vodInfo.speeds}
+          data={getSpeeds(vodInfo.comments)}
           flatten={flatten}
           vodID={vodInfo.vodID}
         />

@@ -1,8 +1,7 @@
 import React from "react";
 import { useParams } from "react-router-dom";
 import Navbar from "../util/Navbar";
-import { getCommentsData, getSpeeds } from "../../services/speeds";
-import { getKeywords } from "../../services/keywords";
+import { getCommentsData } from "../../services/speeds";
 import ErrorVodPage from "./ErrorVodPage";
 import {
   Container,
@@ -11,18 +10,19 @@ import {
   Typography,
   Theme,
 } from "@material-ui/core";
-import {
-  addOrUpdateVod,
-  getGenericSingleVodInfo,
-  getNumVods,
-  getSingleVodInfo,
-  SingleVodInfo,
-} from "../../services/storage";
 import Notification from "../util/Notification";
 import { Comment } from "../../twitch_api/getComments";
 import VodInfoCard from "./Cards/VodInfoCard";
 import SpeedsChartCard from "./Cards/SpeedsChartCard";
 import KeywordsCard from "./Cards/KeywordsCard";
+import {
+  getVodFullInfo,
+  getVodFullInfoDB,
+  saveVods,
+  VodWithAllInfo,
+} from "../../services/storage";
+import { getNumVods } from "../../local_db/vod";
+import getVodInfo, { VodInfo } from "../../twitch_api/getVodInfo";
 const useStyles = makeStyles((theme: Theme) => ({
   loadedText: {
     margin: theme.spacing(5),
@@ -31,17 +31,22 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 const AnalyzeVod = () => {
   const classes = useStyles();
-  const [vodInfo, setVodInfo] = React.useState<SingleVodInfo>(
-    getGenericSingleVodInfo()
+  const { vodID } = useParams() as { vodID: string };
+
+  const [vodInfo, setVodInfo] = React.useState<VodWithAllInfo | null>(null);
+  const [comments, setComments] = React.useState<Comment[]>([]);
+  const [twitchVodInfo, setTwitchVodInfo] = React.useState<VodInfo | null>(
+    null
   );
+
   const [isErr, setIsErr] = React.useState(false);
+
   // -1 (done loading) >= 0 (number of comments that have been loaded)
   const [commentsLoaded, setCommentsLoaded] = React.useState<number>(-2);
+
   const [saveErr, setSaveErr] = React.useState(false);
   const [saveMsg, setSaveMsg] = React.useState("");
-  const [comments, setComments] = React.useState<Comment[] | null>(null);
-  const [bookmarkNum, setBookmarkNum] = React.useState(getNumVods());
-  const { vodID } = useParams() as { vodID: string };
+  const [bookmarkNum, setBookmarkNum] = React.useState<number>(0);
   const loadComments = async () => {
     const comments = await getCommentsData(vodID, (prog, completed) => {
       if (completed) setCommentsLoaded(-1);
@@ -52,54 +57,45 @@ const AnalyzeVod = () => {
       return [];
     }
     setComments(comments as Comment[]);
-    const vodObj = {
-      vodID,
-      speeds: getSpeeds(comments as Comment[]),
-      mostCommonKeywords: await getKeywords(vodID, comments as Comment[]),
-    };
-    setVodInfo(vodObj);
-
     return comments;
   };
   React.useEffect(() => {
-    const vodObj = getSingleVodInfo(vodID);
-    if (vodObj) {
-      setCommentsLoaded(-1);
-      setVodInfo(vodObj);
-    } else {
-      loadComments();
-    }
+    (async () => {
+      const vodFullInfo = await getVodFullInfoDB(vodID);
+      setVodInfo(vodFullInfo);
+      setBookmarkNum(await getNumVods());
+      if (vodFullInfo) {
+        setCommentsLoaded(-1);
+      } else {
+        const comments = await loadComments();
+        const twitchVodInfo = await getVodInfo(vodID);
+        setTwitchVodInfo(twitchVodInfo);
+        setVodInfo(getVodFullInfo(vodID, twitchVodInfo, comments));
+      }
+    })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [vodID]);
   const saveVod = async () => {
-    let newBookmarkNum = bookmarkNum;
-    // Does not exist yet
-    if (!getSingleVodInfo(vodID)) {
-      newBookmarkNum++;
-    }
-    const res = addOrUpdateVod(vodInfo);
-    if (res === "") {
-      setBookmarkNum(newBookmarkNum);
+    const savedInfo = await getVodFullInfoDB(vodID);
+    if (savedInfo) {
+      setSaveErr(true);
+      setSaveMsg("Already saved");
       return;
-    } else if (res === "QuotaExceededError") {
-      setSaveErr(true);
-      setSaveMsg(
-        "Not enough memory to save the vod, remove some vods in bookmarks"
-      );
-    } else {
-      setSaveErr(true);
-      setSaveMsg(`ERROR: Could not save vod due to ${res}`);
+    }
+    setBookmarkNum(bookmarkNum + 1);
+    if (twitchVodInfo) {
+      try {
+        saveVods(vodID, twitchVodInfo, comments);
+      } catch (err) {
+        setSaveErr(true);
+        setSaveMsg("Failed to save vod");
+      }
     }
   };
   const downloadComments = async () => {
-    let loadedComments = comments;
-    if (!loadedComments) loadedComments = await getCommentsData(vodID, null);
-    if (loadedComments !== null) {
-      const content = `VodID: ${vodID}\n${(loadedComments as Comment[])
-        .map(
-          (item) =>
-            `${item.commenter.display_name}[${item.content_offset_seconds}s]: ${item.message.body}`
-        )
+    if (vodInfo) {
+      const content = `VodID: ${vodInfo.vodID}\n${vodInfo.comments
+        .map((item) => `${item.commenter}[${item.seconds}s]: ${item.message}`)
         .join("\n")}`;
       const element = document.createElement("a");
       const file = new Blob([content], {
@@ -135,12 +131,16 @@ const AnalyzeVod = () => {
                       loadComments={loadComments}
                     />
                   </Grid>
-                  <Grid item xs={12} xl={6}>
-                    <SpeedsChartCard elevation={5} vodInfo={vodInfo} />
-                  </Grid>
-                  <Grid item xs={12} xl={6}>
-                    <KeywordsCard elevation={5} vodInfo={vodInfo} />
-                  </Grid>
+                  {vodInfo && (
+                    <Grid item xs={12} xl={6}>
+                      <SpeedsChartCard elevation={5} vodInfo={vodInfo} />
+                    </Grid>
+                  )}
+                  {vodInfo && (
+                    <Grid item xs={12} xl={6}>
+                      <KeywordsCard elevation={5} vodInfo={vodInfo} />
+                    </Grid>
+                  )}
                 </>
               )}
             </Grid>
