@@ -46,7 +46,7 @@ const AnalyzeVod = () => {
 
   const [saveErr, setSaveErr] = React.useState(false);
   const [saveMsg, setSaveMsg] = React.useState("");
-  const [bookmarkNum, setBookmarkNum] = React.useState<number | null>(null);
+  const [bookmarkNum, setBookmarkNum] = React.useState<number>(0);
   const loadComments = async () => {
     const comments = await getCommentsData(vodID, (prog, completed) => {
       if (completed) setCommentsLoaded(-1);
@@ -82,14 +82,10 @@ const AnalyzeVod = () => {
       setSaveMsg("Already saved");
       return;
     }
-    let newBookmarkNum = bookmarkNum;
-    if (typeof newBookmarkNum === "number") {
-      newBookmarkNum++;
-    }
+    setBookmarkNum(bookmarkNum + 1);
     if (twitchVodInfo) {
       try {
         saveVods(vodID, twitchVodInfo, comments);
-        setBookmarkNum(newBookmarkNum);
       } catch (err) {
         setSaveErr(true);
         setSaveMsg("Failed to save vod");

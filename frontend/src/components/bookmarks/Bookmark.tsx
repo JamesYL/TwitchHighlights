@@ -17,6 +17,7 @@ import React from "react";
 import { useHistory } from "react-router";
 import {
   getAllVods,
+  getNumVods,
   removeVod as removeVodFromStorage,
   VodWithAllInfo,
 } from "../../services/storage";
@@ -30,16 +31,20 @@ const useStyles = makeStyles({
 const Bookmark = () => {
   const [allVods, setAllVods] = React.useState<VodWithAllInfo[] | null>(null);
   const classes = useStyles();
+  const [bookmarkNum, setBookmarkNum] = React.useState<number>(0);
+
   React.useEffect(() => {
     (async () => {
       const vods = await getAllVods();
       setAllVods(vods);
+      setBookmarkNum(await getNumVods());
     })();
   }, []);
   const removeVod = (vodID: string, index: number) => () => {
     if (allVods) {
       setAllVods(allVods.filter((_, i) => i !== index));
       removeVodFromStorage(vodID);
+      setBookmarkNum(bookmarkNum - 1);
     }
   };
   const elevation = 5;
@@ -53,7 +58,7 @@ const Bookmark = () => {
   const history = useHistory();
   return (
     <>
-      <Navbar />
+      <Navbar bookmarkNum={bookmarkNum} />
       <Container maxWidth={"xl"}>
         <br />
         {allVods && (

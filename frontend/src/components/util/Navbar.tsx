@@ -66,6 +66,7 @@ export default function Navbar({
   React.useEffect(() => {
     (async () => {
       if (!bookmarkNum) setNum(await getNumVods());
+      else setNum(bookmarkNum);
     })();
   }, [bookmarkNum]);
 
@@ -90,7 +91,10 @@ export default function Navbar({
               color="inherit"
               onClick={clickBookmark}
             >
-              <Badge badgeContent={actualBookmarkNum} color="secondary">
+              <Badge
+                badgeContent={actualBookmarkNum ? actualBookmarkNum : null}
+                color="secondary"
+              >
                 <BookmarksIcon />
               </Badge>
             </IconButton>
