@@ -12,7 +12,6 @@ import {
   makeStyles,
 } from "@material-ui/core";
 import React from "react";
-import { isVodSavedAlready } from "../../../services/storage";
 import { Comment } from "../../../twitch_api/getComments";
 import getVodInfo, { VodInfo } from "../../../twitch_api/getVodInfo";
 interface VodInfoCardProps {
@@ -33,7 +32,6 @@ const VodInfoCard = ({
   elevation,
   downloadComments,
   saveVod,
-  loadComments,
 }: VodInfoCardProps) => {
   const classes = useStyles();
   const [vodInfo, setVodInfo] = React.useState<VodInfo | null>(null);
@@ -102,16 +100,6 @@ const VodInfoCard = ({
         </Button>
         <Button size="small" color="primary" onClick={saveVod}>
           save analytics
-        </Button>
-        <Button
-          size="small"
-          color="primary"
-          onClick={async () => {
-            await loadComments();
-            if (isVodSavedAlready(vodID)) saveVod();
-          }}
-        >
-          Reload Analytics
         </Button>
       </CardActions>
     </Card>

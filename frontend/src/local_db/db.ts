@@ -26,7 +26,7 @@ export interface IVod {
   vodID: string;
   channelID: string;
   vodInfo: VodInfo;
-  comments: Comment[]
+  comments: Comment[];
 }
 export interface ChannelInfo {
   logo: ImageURL;
@@ -44,7 +44,7 @@ class Database extends Dexie {
   constructor() {
     super("Database");
     this.version(1).stores({
-      contacts: "vodID",
+      vod: "vodID",
       channel: "channelID, name",
     });
     this.vod = this.table("vod");

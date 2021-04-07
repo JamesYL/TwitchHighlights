@@ -1,5 +1,3 @@
-import { Comment } from "../local_db/db";
-
 import axios from "axios";
 import { VodWithAllInfo } from "./storage";
 export interface Keyword {

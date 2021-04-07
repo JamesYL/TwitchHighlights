@@ -11,7 +11,12 @@ import {
   VodInfo as VodInfoDb,
   Comment as CommentDB,
 } from "../local_db/db";
-import { getVod, Vod, getNumVods as getNumVodsDB } from "../local_db/vod";
+import {
+  getVod,
+  Vod,
+  getNumVods as getNumVodsDB,
+  getAllVods as getAllVodsDB,
+} from "../local_db/vod";
 
 export interface VodWithAllInfo {
   vodID: string;
@@ -24,19 +29,18 @@ export interface VodWithAllInfo {
 export const getVodFullInfoDB = async (
   vodID: string
 ): Promise<VodWithAllInfo | null> => {
-  const channel = await getChannel(vodID);
   const vod = await getVod(vodID);
-  if (channel && vod) {
-    return {
-      vodID: vod.vodID,
-      channelID: channel.channelID,
-      channelName: channel.name,
-      channelInfo: channel.channel,
-      vodInfo: vod.vodInfo,
-      comments: vod.comments,
-    };
-  }
-  return null;
+  if (!vod) return null;
+  const channel = await getChannel(vod.channelID);
+  if (!channel) return null;
+  return {
+    vodID: vod.vodID,
+    channelID: channel.channelID,
+    channelName: channel.name,
+    channelInfo: channel.channel,
+    vodInfo: vod.vodInfo,
+    comments: vod.comments,
+  };
 };
 export const getVodFullInfo = (
   vodID: string,
@@ -95,4 +99,11 @@ export const clear = () => {
 };
 export const getNumVods = () => {
   return getNumVodsDB();
+};
+export const getAllVods = async () => {
+  return Promise.all(
+    (await getAllVodsDB()).map((res) => {
+      return getVodFullInfoDB(res.vodID) as Promise<VodWithAllInfo>;
+    })
+  );
 };

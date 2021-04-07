@@ -36,3 +36,6 @@ export const clear = () => {
 export const getNumVods = () => {
   return db.vod.count();
 };
+export const getAllVods = () => {
+  return db.vod.toArray();
+}
