@@ -36,8 +36,8 @@ const useStyles = makeStyles((theme: Theme) =>
       marginBottom: theme.spacing(1),
       width: "100%",
     },
-    appbar: (props: NavProp) => {
-      if (props.transparent) {
+    appbar: ({ transparent }: NavProp) => {
+      if (transparent) {
         return {
           background: "transparent",
         };
@@ -49,15 +49,25 @@ const useStyles = makeStyles((theme: Theme) =>
 interface NavProp {
   transparent?: boolean;
   disableSearch?: boolean;
-  bookmarkNum?: number;
+  bookmarkNum?: number | null;
 }
-export default function Navbar(props: NavProp) {
+export default function Navbar({
+  transparent,
+  disableSearch,
+  bookmarkNum,
+}: NavProp) {
   const history = useHistory();
-  const classes = useStyles(props);
+  const classes = useStyles({ transparent });
   const clickBookmark = () => {
     history.push(`/bookmarks`);
     history.go(0);
   };
+  const [actualBookmarkNum, setNum] = React.useState(bookmarkNum);
+  React.useEffect(() => {
+    (async () => {
+      if (!bookmarkNum) setNum(await getNumVods());
+    })();
+  }, [bookmarkNum]);
 
   return (
     <div className={classes.root}>
@@ -68,7 +78,7 @@ export default function Navbar(props: NavProp) {
               Streamalytics
             </Link>
           </Typography>
-          {!props.disableSearch && (
+          {!disableSearch && (
             <div className={classes.search}>
               <SearchBar />
             </div>
@@ -80,12 +90,7 @@ export default function Navbar(props: NavProp) {
               color="inherit"
               onClick={clickBookmark}
             >
-              <Badge
-                badgeContent={
-                  props.bookmarkNum ? props.bookmarkNum : getNumVods()
-                }
-                color="secondary"
-              >
+              <Badge badgeContent={actualBookmarkNum} color="secondary">
                 <BookmarksIcon />
               </Badge>
             </IconButton>

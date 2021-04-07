@@ -1,83 +1,98 @@
-import { openDb } from "../local_db/db";
-import { Keyword } from "./keywords";
-import { Speed } from "./speeds";
-const STORAGE_KEY = "vods";
+import { removeVod as removeVodDB, clear as clearVod } from "./../local_db/vod";
+import { Comment } from "./../twitch_api/getComments";
+import {
+  getChannel,
+  Channel,
+  clear as clearChannel,
+} from "./../local_db/channel";
+import { VodInfo } from "./../twitch_api/getVodInfo";
+import {
+  ChannelInfo,
+  VodInfo as VodInfoDb,
+  Comment as CommentDB,
+} from "../local_db/db";
+import { getVod, Vod, getNumVods as getNumVodsDB } from "../local_db/vod";
 
-export interface SingleVodInfo {
-  vodID: string | number;
-  speeds: Speed;
-  mostCommonKeywords: Keyword[];
+export interface VodWithAllInfo {
+  vodID: string;
+  channelID: string;
+  channelName: string;
+  channelInfo: ChannelInfo;
+  vodInfo: VodInfoDb;
+  comments: CommentDB[];
 }
-export const getGenericSingleVodInfo = (): SingleVodInfo => {
+export const getVodFullInfoDB = async (
+  vodID: string
+): Promise<VodWithAllInfo | null> => {
+  const channel = await getChannel(vodID);
+  const vod = await getVod(vodID);
+  if (channel && vod) {
+    return {
+      vodID: vod.vodID,
+      channelID: channel.channelID,
+      channelName: channel.name,
+      channelInfo: channel.channel,
+      vodInfo: vod.vodInfo,
+      comments: vod.comments,
+    };
+  }
+  return null;
+};
+export const getVodFullInfo = (
+  vodID: string,
+  vodInfo: VodInfo,
+  comments: Comment[]
+) => {
+  const { channel, ...filteredVodInfo } = vodInfo;
   return {
-    vodID: -1,
-    speeds: {
-      increment: 1,
-      speeds: [],
+    vodID,
+    channelID: channel._id,
+    channelName: channel.display_name,
+    channelInfo: {
+      logo: channel.logo,
+      url: channel.url,
     },
-    mostCommonKeywords: [],
+    vodInfo: filteredVodInfo,
+    comments: changeComments(comments),
   };
 };
-interface StoredVodsInfo {
-  [vodID: string]: SingleVodInfo;
-}
-const getVodsObject = (): StoredVodsInfo => {
-  openDb();
-  const jsonStr = window.localStorage.getItem(STORAGE_KEY);
-  if (!jsonStr) {
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify({}));
-    return {};
-  }
-  try {
-    return JSON.parse(jsonStr);
-  } catch (e) {
-    return {};
-  }
+const changeComments = (comments: Comment[]): CommentDB[] => {
+  return comments.map((item) => ({
+    seconds: item.content_offset_seconds,
+    message: item.message.body,
+    commenter: item.commenter.display_name,
+  }));
 };
-const saveVods = (vod: StoredVodsInfo): string => {
-  try {
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(vod));
-    return "";
-  } catch (e) {
-    return e.name;
-  }
+export const saveVods = (
+  vodID: string,
+  vodInfo: VodInfo,
+  comments: Comment[]
+) => {
+  const channelDB = new Channel(
+    vodInfo.channel._id,
+    vodInfo.channel.display_name,
+    {
+      logo: vodInfo.channel.logo,
+      url: vodInfo.channel.url,
+    }
+  );
+  channelDB.save();
+  const { channel, ...filteredVodInfo } = vodInfo;
+  const vod = new Vod(
+    vodID,
+    channelDB.channelID,
+    changeComments(comments),
+    filteredVodInfo
+  );
+  vod.save();
 };
-export const removeVod = (vodID: string | number) => {
-  const vodsObj = getVodsObject();
-  if (vodID in vodsObj) {
-    delete vodsObj[vodID];
-  }
-  saveVods(vodsObj);
+export const removeVod = (vodID: string) => {
+  return removeVodDB(vodID);
 };
-/**
- * @returns DOMException name, or empty string for success
- */
-export const addOrUpdateVod = (vodInfo: SingleVodInfo) => {
-  const vodObj = getVodsObject();
-  vodObj[vodInfo.vodID] = vodInfo;
-  return saveVods(vodObj);
-};
-export const clearVods = () => {
-  window.localStorage.removeItem(STORAGE_KEY);
-};
-export const getSingleVodInfo = (
-  vodID: string | number
-): SingleVodInfo | undefined => {
-  const vodObj = getVodsObject();
-  if (vodID in vodObj) return vodObj[vodID];
-};
-export const getAllVods = (): SingleVodInfo[] => {
-  const vods: SingleVodInfo[] = [];
-  const vodObj = getVodsObject();
-  for (const key in vodObj) {
-    vods.push(vodObj[key]);
-  }
-  return vods;
+export const clear = () => {
+  clearChannel();
+  clearVod();
 };
 export const getNumVods = () => {
-  return Object.keys(getVodsObject()).length;
-};
-export const isVodSavedAlready = (id: string | number) => {
-  const vodObj = getVodsObject();
-  return id in vodObj;
+  return getNumVodsDB();
 };

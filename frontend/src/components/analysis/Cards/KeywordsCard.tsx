@@ -10,10 +10,10 @@ import {
 import KeywordsChart from "../Charts/KeywordsChart";
 
 import React from "react";
-import { SingleVodInfo } from "../../../services/storage";
-import { Keyword } from "../../../services/keywords";
+import { VodWithAllInfo } from "../../../services/storage";
+import { getKeywords, Keyword } from "../../../services/keywords";
 interface KeywordsChartProps {
-  vodInfo: SingleVodInfo;
+  vodInfo: VodWithAllInfo;
   elevation: number;
 }
 const useStyles = makeStyles((theme: Theme) => ({
@@ -43,6 +43,12 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 const KeywordsCard = ({ vodInfo, elevation }: KeywordsChartProps) => {
   const [selectedData, setSelectedData] = React.useState<null | Keyword>(null);
+  const [data, setData] = React.useState<Keyword[]>([]);
+  React.useEffect(() => {
+    (async () => {
+      setData(await getKeywords(vodInfo));
+    })();
+  }, [vodInfo]);
   const classes = useStyles();
   return (
     <Card elevation={elevation}>
@@ -57,10 +63,7 @@ const KeywordsCard = ({ vodInfo, elevation }: KeywordsChartProps) => {
       />
       <CardContent className={classes.content}>
         <div className={classes.pie}>
-          <KeywordsChart
-            data={vodInfo.mostCommonKeywords}
-            setHoveredData={setSelectedData}
-          />
+          <KeywordsChart data={data} setHoveredData={setSelectedData} />
         </div>
         <div className={classes.info}>
           {selectedData && (
