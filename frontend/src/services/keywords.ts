@@ -35,15 +35,16 @@ export const getKeywords = async (vodInfo: VodWithAllInfo) => {
       .forEach((item) => {
         const split = item.split(" ");
         const hasUsed = new Set();
-        split.forEach((item) => {
+        for (let i = 0; i < split.length; i++) {
           const trimmed = item.trim();
           if (trimmed in emoteMap && !hasUsed.has(trimmed)) {
             hasUsed.add(emoteMap[trimmed].name);
             if (!(trimmed in emoteNumTimes)) emoteNumTimes[trimmed] = 0;
             emoteNumTimes[trimmed]++;
             total++;
+            break;
           }
-        });
+        }
       });
     const output: Keyword[] = [];
     const colours = [

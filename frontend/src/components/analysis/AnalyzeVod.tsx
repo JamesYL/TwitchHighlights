@@ -120,27 +120,23 @@ const AnalyzeVod = () => {
         ) : (
           <>
             <Grid container spacing={3}>
-              {commentsLoaded === -1 && (
+              {commentsLoaded === -1 && vodInfo && (
                 <>
                   <Grid item xs={5} md={5} xl={5}>
                     <VodInfoCard
-                      vodID={vodID}
+                      vodInfo={vodInfo}
                       elevation={5}
                       downloadComments={downloadComments}
                       saveVod={saveVod}
                       loadComments={loadComments}
                     />
                   </Grid>
-                  {vodInfo && (
-                    <Grid item xs={12} xl={6}>
-                      <SpeedsChartCard elevation={5} vodInfo={vodInfo} />
-                    </Grid>
-                  )}
-                  {vodInfo && (
-                    <Grid item xs={12} xl={6}>
-                      <KeywordsCard elevation={5} vodInfo={vodInfo} />
-                    </Grid>
-                  )}
+                  <Grid item xs={12} xl={6}>
+                    <SpeedsChartCard elevation={5} vodInfo={vodInfo} />
+                  </Grid>
+                  <Grid item xs={12} xl={6}>
+                    <KeywordsCard elevation={5} vodInfo={vodInfo} />
+                  </Grid>
                 </>
               )}
             </Grid>

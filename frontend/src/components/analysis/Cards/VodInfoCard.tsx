@@ -12,14 +12,14 @@ import {
   makeStyles,
 } from "@material-ui/core";
 import React from "react";
+import { VodWithAllInfo } from "../../../services/storage";
 import { Comment } from "../../../twitch_api/getComments";
-import getVodInfo, { VodInfo } from "../../../twitch_api/getVodInfo";
 interface VodInfoCardProps {
-  vodID: string | number;
   elevation: number;
   downloadComments: () => void;
   saveVod: () => void;
   loadComments: () => Promise<Comment[]>;
+  vodInfo: VodWithAllInfo;
 }
 const useStyles = makeStyles({
   media: {
@@ -28,68 +28,48 @@ const useStyles = makeStyles({
   },
 });
 const VodInfoCard = ({
-  vodID,
+  vodInfo,
   elevation,
   downloadComments,
   saveVod,
 }: VodInfoCardProps) => {
   const classes = useStyles();
-  const [vodInfo, setVodInfo] = React.useState<VodInfo | null>(null);
-  React.useEffect(() => {
-    (async () => {
-      setVodInfo(await getVodInfo(vodID));
-    })();
-  }, [vodID]);
-  if (!vodInfo) {
-    return (
-      <Card elevation={elevation}>
-        <CardHeader
-          title={<Typography variant="subtitle1">Loading...</Typography>}
-        />
-      </Card>
-    );
-  }
   return (
     <Card elevation={elevation}>
       <CardHeader
         avatar={
           <IconButton
             onClick={() => {
-              window.open((vodInfo as VodInfo).channel.url);
+              window.open(vodInfo.channelInfo.url);
             }}
           >
-            <Avatar
-              aria-label="avatar image"
-              src={(vodInfo as VodInfo).channel.logo}
-            />
+            <Avatar aria-label="avatar image" src={vodInfo.channelInfo.logo} />
           </IconButton>
         }
         title={
-          <Typography variant="subtitle1">
-            {(vodInfo as VodInfo).title}
-          </Typography>
+          <Typography variant="subtitle1">{vodInfo.vodInfo.title}</Typography>
         }
         subheader={
           <Typography variant="subtitle2">
             By{" "}
             <Link
-              href={(vodInfo as VodInfo).channel.url}
+              href={vodInfo.channelInfo.url}
               target="_blank"
               rel="noreferrer"
             >
-              {(vodInfo as VodInfo).channel.display_name}
+              {vodInfo.channelName}
             </Link>{" "}
-            at {new Date((vodInfo as VodInfo).recorded_at).toDateString()}
+            at {new Date(vodInfo.vodInfo.recorded_at).toDateString()}
           </Typography>
         }
       />
       <CardActionArea
         onClick={() => {
-          window.open((vodInfo as VodInfo).url);
+          window.open(vodInfo.vodInfo.url);
         }}
       >
         <CardMedia
-          image={(vodInfo as VodInfo).preview.large}
+          image={vodInfo.vodInfo.preview.large}
           title="Go to vod"
           className={classes.media}
         />
