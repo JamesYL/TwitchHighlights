@@ -26,6 +26,9 @@ const useStyles = makeStyles({
     height: 0,
     paddingTop: "56.25%", // 16:9
   },
+  root: {
+    height: "100%",
+  },
 });
 const VodInfoCard = ({
   vodInfo,
@@ -35,7 +38,7 @@ const VodInfoCard = ({
 }: VodInfoCardProps) => {
   const classes = useStyles();
   return (
-    <Card elevation={elevation}>
+    <Card elevation={elevation} className={classes.root}>
       <CardHeader
         avatar={
           <IconButton

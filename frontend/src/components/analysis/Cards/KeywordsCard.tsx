@@ -32,13 +32,15 @@ const useStyles = makeStyles((theme: Theme) => ({
     marginBottom: theme.spacing(1),
   },
   pie: {
-    justifyItems: "center",
-    maxWidth: "45vw",
+    maxWidth: "23vw",
   },
   content: { display: "flex" },
   info: {
     alignSelf: "center",
     marginLeft: theme.spacing(3),
+  },
+  root: {
+    height: "100%",
   },
 }));
 const KeywordsCard = ({ vodInfo, elevation }: KeywordsChartProps) => {
@@ -51,7 +53,7 @@ const KeywordsCard = ({ vodInfo, elevation }: KeywordsChartProps) => {
   }, [vodInfo]);
   const classes = useStyles();
   return (
-    <Card elevation={elevation}>
+    <Card elevation={elevation} className={classes.root}>
       <CardHeader
         title={
           <Typography variant="subtitle1">Most Frequent Emotes</Typography>
