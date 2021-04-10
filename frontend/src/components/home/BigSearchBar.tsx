@@ -36,6 +36,16 @@ const BigSearchBar = () => {
   const classes = useStyles();
   const [isErr, setIsErr] = React.useState(false);
   const [vodVal, setVodVal] = React.useState("");
+  const [dotAnimation, setDot] = React.useState("");
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      if (dotAnimation === "...") setDot("");
+      else {
+        setDot(dotAnimation + ".");
+      }
+    }, 500);
+    return () => clearInterval(interval);
+  }, [dotAnimation]);
   const handleSubmit = () => {
     let filtered: number = parseInt(vodVal);
     if (!filtered) {
@@ -57,13 +67,14 @@ const BigSearchBar = () => {
   return (
     <div className={classes.root}>
       <input
+        autoFocus
         className={classes.input}
         type="text"
         onChange={(e) => setVodVal(e.target.value)}
         onKeyDown={(e) => {
           if (e.key === "Enter") handleSubmit();
         }}
-        placeholder="Analyze Vod: Enter twitch vod URL"
+        placeholder={`Analyze Vod: Enter twitch vod URL${dotAnimation}`}
       />
       <IconButton onClick={handleSubmit} className={classes.button}>
         <SearchIcon />

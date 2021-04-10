@@ -81,7 +81,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     transform: "rotateZ(-10deg)",
     backgroundPosition: "80%",
     backgroundSize: "400% 400%",
-    animation: "$gradient 30s ease infinite",
+    animation: "$gradient 15s ease infinite",
     overflow: "hidden",
   },
   grow: {
