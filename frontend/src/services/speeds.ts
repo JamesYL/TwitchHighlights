@@ -25,11 +25,37 @@ export const getCommentsData = async (
   return comments;
 };
 
-export const getSpeeds = (comments: CommentDB[], increment = 4): Speed => {
-  if (comments.length === 0) return { increment, speeds: [] };
-  const lastSecond = comments[comments.length - 1].seconds;
+export const getSpeeds = (
+  comments: CommentDB[],
+  filter: string[] = [],
+  increment = 4
+): Speed => {
+  let filteredComments: CommentDB[] = [];
+  filter = filter
+    .filter((item) => item.length > 0)
+    .map((item) => item.toLowerCase());
+  if (filter.length) {
+    const filterSet = new Set(filter);
+    comments.forEach((line) => {
+      const comment = line.message
+        .toLowerCase()
+        // eslint-disable-next-line
+        .replace(/[,\/#!$%\^\*{}?`~]/g, "");
+      const split = comment.split(" ");
+      for (const item of split) {
+        if (filterSet.has(item)) {
+          filteredComments.push(line);
+          break;
+        }
+      }
+    });
+  } else {
+    filteredComments = comments;
+  }
+  if (filteredComments.length === 0) return { increment, speeds: [] };
+  const lastSecond = filteredComments[filteredComments.length - 1].seconds;
   const speeds: number[] = Array(~~(lastSecond / increment) + 2).fill(0);
-  comments.forEach((comment) => {
+  filteredComments.forEach((comment) => {
     const time = comment.seconds;
     speeds[~~(time / increment)] += 1 / increment;
   });

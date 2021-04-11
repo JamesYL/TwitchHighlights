@@ -14,7 +14,7 @@ import {
   flattenSpeeds,
   Speed,
 } from "../../../services/speeds";
-import { useWidth } from "../../../util/getDimensions";
+import { useWidth } from "../../../util/util";
 
 interface ChartProps {
   data: Speed;
@@ -29,13 +29,17 @@ const Chart = (props: ChartProps) => {
   const [zoomXDomain, setZoomXDomain] = React.useState<
     [number, number] | [Date, Date]
   >([0, 1000000]);
-  const getEntireDomain = (): DomainPropType | undefined => {
-    if (props.data.speeds.length)
-      return {
+  const [entireDomain, setEntireDomain] = React.useState<
+    DomainPropType | undefined
+  >();
+  React.useEffect(() => {
+    if (props.data.speeds.length) {
+      setEntireDomain({
         x: [0, props.data.speeds.length * props.data.increment],
         y: [0, Math.max(...props.data.speeds) + 0.5],
-      };
-  };
+      });
+    }
+  }, [props.data]);
   const windowWidth = useWidth();
   const [width, setWidth] = React.useState(0);
   const graphRef = React.useCallback(
@@ -54,7 +58,7 @@ const Chart = (props: ChartProps) => {
         height={300}
         width={width}
         padding={{ top: 50, left: 80, right: 50, bottom: 50 }}
-        domain={getEntireDomain()}
+        domain={entireDomain}
         containerComponent={
           <VictoryZoomVoronoiContainer
             zoomDimension="x"

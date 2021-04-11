@@ -71,7 +71,8 @@ const KeywordsCard = ({ vodInfo, elevation }: KeywordsChartProps) => {
           {selectedData && (
             <div>
               <Typography component="h4" variant="h6">
-                {selectedData.title} ({Math.round(selectedData.value)}%)
+                {selectedData.title} ({Math.round(selectedData.value * 10) / 10}
+                %)
               </Typography>
               {selectedData.url && (
                 <img src={selectedData.url} alt={`${selectedData.title}`} />

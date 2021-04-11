@@ -30,7 +30,13 @@ export const getKeywords = async (vodInfo: VodWithAllInfo) => {
     const emoteNumTimes = {};
     let total = 0;
     vodInfo.comments
-      .map((item) => item.message.trim().toLowerCase())
+      .map((item) =>
+        item.message
+          .trim()
+          .toLowerCase()
+          // eslint-disable-next-line
+          .replace(/[,\/#!$%\^\*{}?`~]/g, "")
+      )
       .filter((msg) => msg.length > 0)
       .forEach((item) => {
         const split = item.split(" ");
@@ -74,7 +80,7 @@ export const getKeywords = async (vodInfo: VodWithAllInfo) => {
     const newOutput: Keyword[] = [];
     let otherPercent = 0;
     for (let i = 0; i < output.length; i++) {
-      if (output[i].value >= 1) {
+      if (output[i].value >= 0.5) {
         newOutput.push({
           ...output[i],
           color: colours[i % colours.length],
