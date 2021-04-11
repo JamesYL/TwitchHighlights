@@ -16,7 +16,6 @@ import SpeedsChart from "../Charts/SpeedsChart";
 import React, { BaseSyntheticEvent } from "react";
 import { VodWithAllInfo } from "../../../services/storage";
 import { getSpeeds, Speed } from "../../../services/speeds";
-import { useForceUpdate } from "../../../util/util";
 interface SpeedsChartCardProps {
   vodInfo: VodWithAllInfo;
   elevation: number;
