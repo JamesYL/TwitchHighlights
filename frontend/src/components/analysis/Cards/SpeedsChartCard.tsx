@@ -16,6 +16,7 @@ import SpeedsChart from "../Charts/SpeedsChart";
 import React, { BaseSyntheticEvent } from "react";
 import { VodWithAllInfo } from "../../../services/storage";
 import { getSpeeds, Speed } from "../../../services/speeds";
+import { useForceUpdate } from "../../../util/util";
 interface SpeedsChartCardProps {
   vodInfo: VodWithAllInfo;
   elevation: number;
@@ -59,11 +60,13 @@ const SpeedsChartCard = ({ vodInfo, elevation }: SpeedsChartCardProps) => {
   const classes = useStyles();
   const [flatten, setFlatten] = React.useState(1);
   const [data, setData] = React.useState<Speed>(getSpeeds(vodInfo.comments));
+  const forceUpdate = useForceUpdate();
   const onUpdate = (e: BaseSyntheticEvent) => {
     e.preventDefault();
     const target = e.currentTarget;
     const filter = target.elements["filter"].value as string;
     setData(getSpeeds(vodInfo.comments, filter.split("\n")));
+    forceUpdate(); // VictoryChart bug where render not working
   };
   return (
     <Card elevation={elevation}>
