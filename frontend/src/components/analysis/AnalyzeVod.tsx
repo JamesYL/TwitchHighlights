@@ -23,6 +23,7 @@ import {
 } from "../../services/storage";
 import { getNumVods } from "../../local_db/vod";
 import getVodInfo, { VodInfo } from "../../twitch_api/getVodInfo";
+import MoreVodInfoCard from "./Cards/MoreVodInfoCard";
 const useStyles = makeStyles((theme: Theme) => ({
   loadedText: {
     margin: theme.spacing(5),
@@ -122,7 +123,7 @@ const AnalyzeVod = () => {
             <Grid container spacing={3}>
               {commentsLoaded === -1 && vodInfo && (
                 <>
-                  <Grid item xs={12} md={6} lg={5} xl={4}>
+                  <Grid item xs={12} md={6} xl={4}>
                     <VodInfoCard
                       vodInfo={vodInfo}
                       elevation={5}
@@ -131,7 +132,10 @@ const AnalyzeVod = () => {
                       loadComments={loadComments}
                     />
                   </Grid>
-                  <Grid item xs>
+                  <Grid item xs={12} md={6} xl={4}>
+                    <MoreVodInfoCard elevation={5} vodInfo={vodInfo} />
+                  </Grid>
+                  <Grid item xs={12} xl={4}>
                     <KeywordsCard elevation={5} vodInfo={vodInfo} />
                   </Grid>
                   <Grid item xs={12}>

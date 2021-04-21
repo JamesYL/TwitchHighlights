@@ -61,8 +61,7 @@ const VodInfoCard = ({
               rel="noreferrer"
             >
               {vodInfo.channelName}
-            </Link>{" "}
-            at {new Date(vodInfo.vodInfo.recorded_at).toDateString()}
+            </Link>
           </Typography>
         }
       />

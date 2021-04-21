@@ -59,7 +59,9 @@ const KeywordsCard = ({ vodInfo, elevation }: KeywordsChartProps) => {
           <Typography variant="subtitle1">Most Frequent Emotes</Typography>
         }
         subheader={
-          <Typography variant="subtitle2">Hover over for info</Typography>
+          <Typography variant="subtitle2">
+            Hover over or click for info
+          </Typography>
         }
         className={classes.header}
       />

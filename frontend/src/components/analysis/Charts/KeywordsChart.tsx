@@ -8,6 +8,7 @@ interface KeywordsChartProps {
 }
 
 const Chart = ({ data, setHoveredData }: KeywordsChartProps) => {
+  const [clickedData, setClickedData] = React.useState<Keyword | null>(null);
   return (
     <div>
       <PieChart
@@ -15,8 +16,11 @@ const Chart = ({ data, setHoveredData }: KeywordsChartProps) => {
         onMouseOver={(_, index) => {
           setHoveredData(data[index]);
         }}
+        onClick={(_, index) => {
+          setClickedData(data[index]);
+        }}
         onMouseOut={() => {
-          setHoveredData(null);
+          setHoveredData(clickedData);
         }}
       />
     </div>

@@ -68,9 +68,7 @@ const SpeedsChartCard = ({ vodInfo, elevation }: SpeedsChartCardProps) => {
   return (
     <Card elevation={elevation}>
       <CardHeader
-        title={
-          <Typography variant="subtitle1">Number of Chat Messages</Typography>
-        }
+        title={<Typography variant="subtitle1">Chat Intensity</Typography>}
         subheader={
           <Typography variant="subtitle2">
             Zoom in and drag to check out the graph
