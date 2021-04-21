@@ -18,9 +18,9 @@ import { useWidth } from "../../../util/util";
 
 interface ChartProps {
   data: Speed;
-  vodID: string | number;
   flatten: number;
 }
+
 const Chart = (props: ChartProps) => {
   const VictoryZoomVoronoiContainer = createContainer<
     VictoryZoomContainerProps,
@@ -53,7 +53,11 @@ const Chart = (props: ChartProps) => {
   );
 
   return (
-    <div style={{ width: "100%", height: "100%" }} ref={graphRef}>
+    <div
+      style={{ width: "100%", height: "100%" }}
+      ref={graphRef}
+      key={props.data.speeds.length}
+    >
       <VictoryChart
         height={300}
         width={width}

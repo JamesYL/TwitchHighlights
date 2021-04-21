@@ -1,4 +1,4 @@
-import { useState, useEffect, useReducer } from "react";
+import { useState, useEffect } from "react";
 
 const getInnerDims = () => {
   return {
@@ -22,4 +22,3 @@ export const useWidth = () => {
 export const useHeight = () => {
   return useWindowDimensions().height;
 };
-export const useForceUpdate = () => useReducer(() => ({}), {})[1] as () => void;
