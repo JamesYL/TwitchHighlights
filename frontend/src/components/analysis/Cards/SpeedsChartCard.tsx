@@ -59,6 +59,7 @@ const SpeedsChartCard = ({ vodInfo, elevation }: SpeedsChartCardProps) => {
   const classes = useStyles();
   const [flatten, setFlatten] = React.useState(1);
   const [data, setData] = React.useState<Speed>(getSpeeds(vodInfo.comments));
+
   const onUpdate = (e: BaseSyntheticEvent) => {
     e.preventDefault();
     const target = e.currentTarget;

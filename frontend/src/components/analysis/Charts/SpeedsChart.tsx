@@ -93,4 +93,9 @@ const Chart = (props: ChartProps) => {
   );
 };
 
-export default Chart;
+export default React.memo(Chart, (prevProps, nextProps) => {
+  return (
+    prevProps.flatten === nextProps.flatten &&
+    prevProps.data.speeds.length === nextProps.data.speeds.length
+  );
+});

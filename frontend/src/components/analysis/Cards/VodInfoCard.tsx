@@ -78,10 +78,10 @@ const VodInfoCard = ({
       </CardActionArea>
       <CardActions>
         <Button size="small" color="primary" onClick={downloadComments}>
-          download comments
+          download chat
         </Button>
         <Button size="small" color="primary" onClick={saveVod}>
-          save analytics
+          save this vod
         </Button>
       </CardActions>
     </Card>
