@@ -10,6 +10,7 @@ import {
   IconButton,
   Typography,
   Link,
+  Theme,
   Grid,
   makeStyles,
 } from "@material-ui/core";
@@ -22,12 +23,16 @@ import {
   VodWithAllInfo,
 } from "../../services/storage";
 import Navbar from "../util/Navbar";
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme: Theme) => ({
   media: {
     height: 0,
     paddingTop: "56.25%", // 16:9
   },
-});
+  noSaved: {
+    paddingTop: theme.spacing(4),
+    fontFamily: "'New Tegomin', serif",
+  },
+}));
 const Bookmark = () => {
   const [allVods, setAllVods] = React.useState<VodWithAllInfo[] | null>(null);
   const classes = useStyles();
@@ -140,6 +145,18 @@ const Bookmark = () => {
               );
             })}
           </Grid>
+        )}
+        {allVods && allVods.length === 0 && (
+          <>
+            <Typography
+              align="center"
+              component="h1"
+              variant="h2"
+              className={classes.noSaved}
+            >
+              No Saved Vods
+            </Typography>
+          </>
         )}
       </Container>
     </>
