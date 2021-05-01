@@ -21,6 +21,13 @@ interface ChartProps {
   flatten: number;
 }
 
+const convertToSeconds = (num: number) => {
+  const numHours = ~~(num / 3600);
+  const numMins = ~~((num - numHours * 3600) / 60);
+  const numSecs = num - numHours * 3600 - numMins * 60;
+  return `${numHours}h ${numMins}m ${numSecs}s`;
+};
+
 const Chart = (props: ChartProps) => {
   const VictoryZoomVoronoiContainer = createContainer<
     VictoryZoomContainerProps,
@@ -76,10 +83,9 @@ const Chart = (props: ChartProps) => {
         <VictoryAxis
           dependentAxis
           label="Messages"
-          tickFormat={(x) => x}
           axisLabelComponent={<VictoryLabel dy={-20} />}
         />
-        <VictoryAxis label="Time (s)" />
+        <VictoryAxis label="Time (s)" tickFormat={(x) => convertToSeconds(x)} />
         <VictoryLine
           data={convertToSpeedPoint(
             flattenSpeeds(props.data, props.flatten)
