@@ -49,16 +49,17 @@ const AnalyzeVod = () => {
   const [saveMsg, setSaveMsg] = React.useState("");
   const [bookmarkNum, setBookmarkNum] = React.useState<number>(0);
   const loadComments = async () => {
-    const comments = await getCommentsData(vodID, (prog, completed) => {
-      if (completed) setCommentsLoaded(-1);
-      else setCommentsLoaded(prog);
-    });
-    if (comments === null) {
+    try {
+      const comments = await getCommentsData(vodID, (prog, completed) => {
+        if (completed) setCommentsLoaded(-1);
+        else setCommentsLoaded(prog);
+      });
+      setComments(comments);
+      return comments;
+    } catch (e) {
       setIsErr(true);
       return [];
     }
-    setComments(comments as Comment[]);
-    return comments;
   };
   React.useEffect(() => {
     (async () => {

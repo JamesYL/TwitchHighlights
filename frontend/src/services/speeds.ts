@@ -16,10 +16,9 @@ export interface SpeedPoint {
 export const getCommentsData = async (
   id: string,
   onUpdate: OnUpdate | null
-): Promise<Comment[] | null> => {
+): Promise<Comment[]> => {
   const observ = new Observable(onUpdate);
   const vod = await getVodInfo(id);
-  if (!vod) return null;
   const comments = await getComments(id, observ, 0, vod.length);
   observ.finish();
   return comments;

@@ -67,7 +67,7 @@ const SearchBar = () => {
         <SearchIcon />
       </IconButton>
       <Notification
-        message={`Vod id cannot be determined from the input`}
+        message={`Failed to find the VOD`}
         open={isErr}
         setOpen={setIsErr}
       />

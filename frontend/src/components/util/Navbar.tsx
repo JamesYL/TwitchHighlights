@@ -11,6 +11,7 @@ import { useHistory } from "react-router";
 import { getNumVods } from "../../services/storage";
 import React from "react";
 import Link from "@material-ui/core/Link";
+import GetAppIcon from "@material-ui/icons/GetApp";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     grow: {
@@ -62,6 +63,10 @@ export default function Navbar({
     history.push(`/bookmarks`);
     history.go(0);
   };
+  const clickDownloadApp = () => {
+  history.push(`/releases`);
+  history.go(0);
+  }
   const [actualBookmarkNum, setNum] = React.useState(bookmarkNum);
   React.useEffect(() => {
     (async () => {
@@ -85,6 +90,15 @@ export default function Navbar({
             </div>
           )}
           <div className={classes.grow} />
+          <Tooltip title="Download Clips" aria-label="download clips">
+            <IconButton
+              aria-label="get desktop app"
+              color="inherit"
+              onClick={clickDownloadApp}
+            >
+              <GetAppIcon />
+            </IconButton>
+          </Tooltip>
           <Tooltip title="Saved vods" aria-label="saved vods">
             <IconButton
               aria-label="show saved vod analytics"
