@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme: Theme) =>
       marginRight: theme.spacing(2),
     },
     title: {
-      fontFamily: "Alfa Slab One, cursive",
+      fontFamily: "Alfa Slab One",
       color: "white",
       [theme.breakpoints.up("sm")]: {
         display: "block",
@@ -64,9 +64,9 @@ export default function Navbar({
     history.go(0);
   };
   const clickDownloadApp = () => {
-  history.push(`/releases`);
-  history.go(0);
-  }
+    history.push(`/releases`);
+    history.go(0);
+  };
   const [actualBookmarkNum, setNum] = React.useState(bookmarkNum);
   React.useEffect(() => {
     (async () => {
