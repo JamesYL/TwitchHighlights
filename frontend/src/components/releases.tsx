@@ -26,6 +26,7 @@ const useStyles = makeStyles((theme: Theme) => {
       fontSize: "1.5em",
       textTransform: "none",
       marginBottom: theme.spacing(15),
+      marginRight: theme.spacing(1),
     },
     icon: {
       marginRight: theme.spacing(1),
@@ -35,7 +36,9 @@ const useStyles = makeStyles((theme: Theme) => {
 const Releases = () => {
   const classes = useStyles();
   const windowsLink =
-    "https://github.com/JamesYL/TwitchClips/releases/download/v1.0.0/Streamalytics-1.0.0.exe";
+    "https://github.com/JamesYL/TwitchClips/releases/download/v1.0.1/Streamalytics-1.0.1.exe";
+  const macLink =
+    "https://github.com/JamesYL/TwitchClips/releases/download/v1.0.1/Streamalytics-1.0.1.dmg";
   return (
     <>
       <Navbar />
@@ -56,6 +59,14 @@ const Releases = () => {
           >
             <GetAppIcon className={classes.icon} />
             Download for Windows
+          </Button>
+          <Button
+            variant="outlined"
+            className={classes.mainDownload}
+            onClick={() => window.open(macLink)}
+          >
+            <GetAppIcon className={classes.icon} />
+            Download for Mac
           </Button>
           <Typography variant="h2" component="h2" className={classes.title}>
             Why Download?
